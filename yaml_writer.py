@@ -56,13 +56,11 @@ def create_lambda_function(handler, uri):
 def write(config):
     yaml = YAML()
 
-    with open('stuff.yaml', 'w') as yamlFile:
+    with open(config['template'], 'w') as yamlFile:
         complete_dict = write_header()
         complete_dict.update(write_global_section(config['language']))
 
         lambdas = []
-
-        print(config['lambdas'])
 
         for l in config['lambdas']:
             lambdas.append(create_lambda_function_with_name(l['name'], l['handler'], l['uri']))
