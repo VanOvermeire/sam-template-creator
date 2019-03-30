@@ -40,20 +40,19 @@ Python:
 Node:
 - ...
 
+Go:
+- ...
+
 ### TODO
 
 Overall
-- Use strategy to analyze files per language
+- Add other languages, via strategy
 - Add gif demonstrating capabilities
 - Option to specify folders to look for in project
-- Add option to deploy created template?
+- Config option: set memory/timeout on individual lambdas vs globally
+- Ask questions: see you call dynamo, add to template? generate outputs? deploy template?
 
 Improvements
 - Api? Similar to events
 - Generate requirements.txt? -> or does SAM package get the right dependencies?
-- Config option: set memory/timeout on individual lambdas vs globally
-- Setup an integration test
-
-Cleanup
-- Remove temp
-
+- Setup an integration test! (And add more tests)

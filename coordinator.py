@@ -21,7 +21,7 @@ def create_template(location, language, timeout, memory):
     if memory is None:
         memory = 512
 
-    lambdas = directory_scanner.find_directory(location, directory_scanner.get_language_suffix(language))
+    lambdas = directory_scanner.find_directory(location, language)
 
     template_location = full_location_template(location, DEFAULT_TEMPLATE_NAME)
     yaml_writer.write({'language': language, 'lambdas': lambdas, 'location': template_location, 'memory': memory, 'timeout': timeout})

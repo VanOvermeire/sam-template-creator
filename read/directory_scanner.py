@@ -2,6 +2,7 @@ import re
 from pathlib import Path
 
 from constants.constants import LANGUAGES_WITH_SUFFIXES
+from read import strategy_builder
 from read.FileInfo import FileInfo
 
 
@@ -30,21 +31,23 @@ def is_handler_file(lines):
     return False, None
 
 
-def find_directory(location, language_suffix):
+def find_directory(location, language):
     dirs = list([x for x in Path(location).iterdir() if x.is_dir()])
     lambdas = []
 
     for a_dir in dirs:
-        for file in list(a_dir.glob('*' + language_suffix)):
+        for file in list(a_dir.glob('*' + LANGUAGES_WITH_SUFFIXES[language])):
             with file.open() as opened_file:
                 lines = opened_file.readlines()
                 true, handler_line = is_handler_file(lines)
 
                 if true:
-                    file_info = FileInfo(location, a_dir, file, handler_line, lines)
+                    strategy = strategy_builder.build_strategy(language)
+                    file_info = FileInfo(location, a_dir, file, handler_line, lines, strategy)
                     lambdas.append(file_info.build())
     return lambdas
 
 
+# TODO remove
 # find_directory('/Users/samvanovermeire/Documents/transcription-backend/', '.py')
 # guess_language('/Users/samvanovermeire/Documents/transcription-backend/')
