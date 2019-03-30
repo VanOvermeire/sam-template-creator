@@ -2,52 +2,52 @@ from ruamel.yaml import YAML
 
 
 def write_header():
-    to_write = dict()
-    to_write['AWSTemplateFormatVersion'] = '2010-09-09'
-    to_write['Transform'] = 'AWS::Serverless-2016-10-31'
-
-    return to_write
+    return {
+        'AWSTemplateFormatVersion': '2010-09-09',
+        'Transform': 'AWS::Serverless-2016-10-31'
+    }
 
 
 def write_global_section(language):
-    to_write = dict()
-    global_section = dict()
-
-    function = dict()
-    function['Timeout'] = 3
-    function['Runtime'] = language
-    function['MemorySize'] = 512
-    global_section['Function'] = function
-
-    to_write['Globals'] = global_section
-
-    return to_write
+    return {
+        'Globals': {
+            'Function': {
+                'Timeout': 3,
+                'Runtime': language,
+                'MemorySize': 512
+            }
+        }
+    }
 
 
 def write_resources(functions):
-    to_write = dict()
     resources = dict()
 
     for name, function in functions:
         resources[name] = function
 
-    to_write['Resources'] = resources
+    return {
+        'Resources': resources
+    }
 
-    return to_write
 
-
-def create_lambda_function_with_name(name, handler, uri):
-    return name, create_lambda_function(handler, uri)
+def create_lambda_function_with_name(name, handler, uri, variables):
+    return name, create_lambda_function(handler, uri, variables)
 
 
 # TODO Role? -> try to find out and use built-in roles; Environment -> try to find out?; Events? Ignore others for now, later add options, maybe also something for api
-# Runtime, Timeout = set globally
-def create_lambda_function(handler, uri):
+def create_lambda_function(handler, uri, variables):
+    variables_with_value = dict()
+
+    for variable in variables:
+        variables_with_value[variable] = 'FILL IN VALUE!'
+
     return {
         'Type': 'AWS::Serverless::Function',
         'Properties': {
             'CodeUri': uri,
-            'Handler': handler
+            'Handler': handler,
+            'Environment': {'Variables': variables_with_value}
         }
     }
 
@@ -62,7 +62,7 @@ def write(config):
         lambdas = []
 
         for l in config['lambdas']:
-            lambdas.append(create_lambda_function_with_name(l['name'], l['handler'], l['uri']))
+            lambdas.append(create_lambda_function_with_name(l['name'], l['handler'], l['uri'], l['variables']))
 
         complete_dict.update(write_resources(lambdas))
 

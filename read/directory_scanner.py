@@ -45,5 +45,5 @@ def find_directory(location, language_suffix):
     return lambdas
 
 
-# print(find_directory('/Users/samvanovermeire/Documents/transcription-backend/', '.py'))
+# find_directory('/Users/samvanovermeire/Documents/transcription-backend/', '.py')
 # guess_language('/Users/samvanovermeire/Documents/transcription-backend/')

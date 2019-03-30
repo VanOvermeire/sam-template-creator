@@ -1,7 +1,7 @@
 from read import directory_scanner
 from write import yaml_writer
 
-# location = '/Users/samvanovermeire/Documents/transcription-backend/'  # temp
+# location = '/Users/samvanovermeire/Documents/transcriptions-backend/'  # temp
 
 DEFAULT_TEMPLATE_NAME = 'temp-template.yaml'  # TODO change
 
