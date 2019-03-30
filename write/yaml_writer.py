@@ -52,7 +52,6 @@ def create_lambda_function(handler, uri):
     }
 
 
-# TODO should write to template.yaml, if it does not exist
 def write(config):
     yaml = YAML()
 

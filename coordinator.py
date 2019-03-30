@@ -1,8 +1,6 @@
-import directory_scanner
-import yaml_writer
-import checks
+from read import directory_scanner
+from write import yaml_writer
 
-# TODO make stuff configurable: overwrite locations to check (ignore some?), language, mem size, etc.
 # location = '/Users/samvanovermeire/Documents/transcription-backend/'  # temp
 
 DEFAULT_TEMPLATE_NAME = 'temp-template.yaml'  # TODO change
