@@ -55,7 +55,7 @@ def create_lambda_function(handler, uri, variables):
 def write(config):
     yaml = YAML()
 
-    with open(config['template'], 'w') as yamlFile:
+    with open(config['location'], 'w') as yamlFile:
         complete_dict = write_header()
         complete_dict.update(write_global_section(config['language']))
 
