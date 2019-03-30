@@ -1,8 +1,7 @@
 import os
 from time import time
 
-# TODO add other runtimes
-RUNTIMES = ['python3.7', 'nodejs8.10']
+from constants.constants import LANGUAGES_WITH_SUFFIXES
 
 
 def build_backup_name(template_name):
@@ -19,8 +18,8 @@ def check_template_name(location, template_name):
 
 
 def check_runtime(language):
-    if language is not None and language not in RUNTIMES:
-        print('language {} not in list {}'.format(language, RUNTIMES))
+    if language is not None and language not in LANGUAGES_WITH_SUFFIXES.keys():
+        print('language {} not in list {}'.format(language, LANGUAGES_WITH_SUFFIXES.keys()))
         return False
     return True
 

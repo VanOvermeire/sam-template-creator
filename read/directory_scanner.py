@@ -1,11 +1,8 @@
 import re
 from pathlib import Path
-from read.FileInfo import FileInfo
 
-LANGUAGE_SUFFIXES = {
-    'python3.7': '.py',
-    'node': '.js'  # TODO which version?
-}
+from constants.constants import LANGUAGES_WITH_SUFFIXES
+from read.FileInfo import FileInfo
 
 
 def get_number_of_files_for(language, file_names):
@@ -14,14 +11,14 @@ def get_number_of_files_for(language, file_names):
 
 def guess_language(location):
     all_files_with_a_suffix = list(str(x) for x in Path(location).rglob("*.*"))
-    languages_with_counts = {k: get_number_of_files_for(v, all_files_with_a_suffix) for k, v in LANGUAGE_SUFFIXES.items()}
+    languages_with_counts = {k: get_number_of_files_for(v, all_files_with_a_suffix) for k, v in LANGUAGES_WITH_SUFFIXES.items()}
     language = max(languages_with_counts, key=languages_with_counts.get)
 
     return language
 
 
 def get_language_suffix(language):
-    return LANGUAGE_SUFFIXES[language]
+    return LANGUAGES_WITH_SUFFIXES[language]
 
 
 def is_handler_file(lines):
