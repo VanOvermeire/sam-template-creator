@@ -3,7 +3,7 @@ from pathlib import Path
 from read.FileInfo import FileInfo
 
 LANGUAGE_SUFFIXES = {
-    'python3': '.py',
+    'python3.7': '.py',
     'node': '.js'  # TODO which version?
 }
 
@@ -17,7 +17,11 @@ def guess_language(location):
     languages_with_counts = {k: get_number_of_files_for(v, all_files_with_a_suffix) for k, v in LANGUAGE_SUFFIXES.items()}
     language = max(languages_with_counts, key=languages_with_counts.get)
 
-    return language, LANGUAGE_SUFFIXES[language]
+    return language
+
+
+def get_language_suffix(language):
+    return LANGUAGE_SUFFIXES[language]
 
 
 def is_handler_file(lines):

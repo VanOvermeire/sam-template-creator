@@ -8,13 +8,13 @@ def write_header():
     }
 
 
-def write_global_section(language):
+def write_global_section(language, memory, timeout):
     return {
         'Globals': {
             'Function': {
-                'Timeout': 3,
+                'Timeout': timeout,
                 'Runtime': language,
-                'MemorySize': 512
+                'MemorySize': memory
             }
         }
     }
@@ -57,7 +57,7 @@ def write(config):
 
     with open(config['location'], 'w') as yamlFile:
         complete_dict = write_header()
-        complete_dict.update(write_global_section(config['language']))
+        complete_dict.update(write_global_section(config['language'], config['memory'], config['timeout']))
 
         lambdas = []
 

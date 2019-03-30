@@ -11,11 +11,15 @@ Run the `create_executable.sh` or clone this project and run `python template_cr
 
 ### TODO
 
+Overall
+- Run SAM package as a check
 - Use strategy to analyze files per language
+
+Improvements
 - Try to find right roles, from templates of SAM
 - Right events?
 - Generate requirements.txt? -> or does SAM package get the right dependencies?
-- Run SAM package as a check
-- More config options: language, location, memory size, timeout, etc.
-- Tests...
+- Config option: set memory/timeout on individual lambdas vs globally
+
+Cleanup
 - Remove temp
