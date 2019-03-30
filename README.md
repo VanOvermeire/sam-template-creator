@@ -47,10 +47,15 @@ Go:
 
 +++ Api? Similar to events
 +++ Generate requirements.txt? -> or does SAM package get the right dependencies?
-+++ Setup an integration test! (And add more tests)
++++ Setup an integration test!
++++ Good unit test coverage
 +++ Add other languages, via strategy
+
 ++ Add gif demonstrating capabilities
 ++ Ask questions: see you call dynamo, add to template? generate outputs? deploy template?
 ++ Complete readme
+++ Output some additional guidance, depending on what was added (events, env vars, etc.)
+
++ git hook that creates new exe before pushing to remote
 + Option to specify folders to look for in project
 + Config option: set memory/timeout on individual lambdas vs globally
