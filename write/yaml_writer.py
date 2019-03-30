@@ -20,23 +20,25 @@ def write_global_section(language, memory, timeout):
     }
 
 
-def write_resources(functions):
+def create_role_name(lambda_name):
+    return '{}Role'.format(lambda_name)
+
+
+def write_resources(lambdas):
     resources = dict()
 
-    for name, function in functions:
-        resources[name] = function
+    for l in lambdas:
+        resources[l['name']] = create_lambda_function(l['name'], l['handler'], l['uri'], l['variables'])
+    # nicer effect when we loop again (all roles at the end of the template)
+    for l in lambdas:
+        resources[create_role_name(l['name'])] = create_role(l['permissions'])
 
     return {
         'Resources': resources
     }
 
 
-def create_lambda_function_with_name(name, handler, uri, variables):
-    return name, create_lambda_function(handler, uri, variables)
-
-
-# TODO Role? -> try to find out and use built-in roles; Environment -> try to find out?; Events? Ignore others for now, later add options, maybe also something for api
-def create_lambda_function(handler, uri, variables):
+def create_lambda_function(name, handler, uri, variables):
     variables_with_value = dict()
 
     for variable in variables:
@@ -47,9 +49,51 @@ def create_lambda_function(handler, uri, variables):
         'Properties': {
             'CodeUri': uri,
             'Handler': handler,
-            'Environment': {'Variables': variables_with_value}
+            'Environment': {'Variables': variables_with_value},
+            'Role': '!GetAtt {}.Arn'.format(create_role_name(name))
         }
     }
+
+
+def create_role(permissions):
+    actions = ['logs:CreateLogStream', 'logs:CreateLogGroup', 'logs:PutLogEvents']
+    actions.extend(permissions)
+    role = {
+        'Type': 'AWS::IAM::Role',
+        'Properties': {
+            'AssumeRolePolicyDocument': {
+                'Version': '2012-10-17',
+                'Statement': [
+                    {
+                        'Effect': 'Allow',
+                        'Principal': {
+                            'Service': ['lambda.amazonaws.com']
+                        },
+                        'Action': ['sts:AssumeRole']
+                    }
+                ]
+            },
+            'Path': '"/',
+            'Policies': [
+                {
+                    'PolicyName': 'LambdaPolicy',
+                    'PolicyDocument': {
+                        'Version': '2012-10-17',
+                        'Statement': [
+                            {
+                                'Effect': 'Allow',
+                                'Action': actions,
+                                'Resource': '*'
+                            }
+
+                        ]
+                    }
+                }
+            ]
+        }
+    }
+
+    return role
 
 
 def write(config):
@@ -58,12 +102,6 @@ def write(config):
     with open(config['location'], 'w') as yamlFile:
         complete_dict = write_header()
         complete_dict.update(write_global_section(config['language'], config['memory'], config['timeout']))
-
-        lambdas = []
-
-        for l in config['lambdas']:
-            lambdas.append(create_lambda_function_with_name(l['name'], l['handler'], l['uri'], l['variables']))
-
-        complete_dict.update(write_resources(lambdas))
+        complete_dict.update(write_resources(config['lambdas']))
 
         yaml.dump(complete_dict, yamlFile)

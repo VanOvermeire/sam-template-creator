@@ -12,8 +12,13 @@ class TestFileInfo(unittest.TestCase):
 
     def test_find_variables(self):
         result = self.fileInfo.find_env_variables()
-        print(result)
-        self.assertIsNotNone(result)
+
+        self.assertEqual(result, ['variable'])
+
+    def test_find_role(self):
+        result = self.fileInfo.find_role()
+
+        self.assertEqual(result, ['dynamodb:*'])
 
     def test_build_camel_case_name(self):
         result = self.fileInfo.build_camel_case_name('hello_world')
@@ -32,3 +37,4 @@ class TestFileInfo(unittest.TestCase):
         self.assertEqual(result['handler'], 'file.my_handler')
         self.assertEqual(result['uri'], 'dir_of_lambda/')
         self.assertEqual(result['variables'], ['variable'])
+        self.assertEqual(result['permissions'], ['dynamodb:*'])

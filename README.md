@@ -7,17 +7,19 @@
 
 ## Usage
 
-Run the `create_executable.sh` or clone this project and run `python template_creator.py`
+Run the `create_executable.sh` or clone this project and run `python template_creator.py`. 
+
+This will create a `template.yaml` file in the root of your project's directory. Check its contents, it might point out some things you have to fill in. 
 
 ### TODO
 
 Overall
-- Run SAM package as a check
 - Use strategy to analyze files per language
 
 Improvements
 - Try to find right roles, from templates of SAM
-- Right events?
+- Right events? - may need some additional info for that...
+- Similar for api
 - Generate requirements.txt? -> or does SAM package get the right dependencies?
 - Config option: set memory/timeout on individual lambdas vs globally
 

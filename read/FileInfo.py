@@ -24,6 +24,8 @@ class FileInfo:
 
         return ''.join(x.title() for x in components)
 
+    # TODO for both of these, use set instead of array
+    # TODO selection too simple, might not work in more complex situations
     def find_env_variables(self):
         variables = []
         first_regex = re.compile(r'.*os.environ\[.*')
@@ -32,7 +34,6 @@ class FileInfo:
         second_regex_results = list(filter(second_regex.search, self.lines))
         # BUCKET = os.environ.get('BUCKET')
 
-        # TODO too simple, might not work in more complex situations
         for result in first_regex_results:
             variable = result[result.index('os.environ[\'') + 12: result.index('\']')]
             variables.append(variable)
@@ -43,9 +44,21 @@ class FileInfo:
 
         return variables
 
+    def find_role(self):
+        clients = []
+        regex = re.compile(r'.*boto3.client.*')
+        results = list(filter(regex.search, self.lines))
+
+        for result in results:
+            client = result[result.index('boto3.client(\'') + 14: result.index('\')')]
+            clients.append('{}:*'.format(client))  # TODO may not work for all clients
+
+        return clients
+
     def build(self):
         dir_name = os.path.relpath(self.directory, self.location)
         handler = self.build_handler()
         variables = self.find_env_variables()
+        permissions = self.find_role()
 
-        return {'name': self.build_camel_case_name(dir_name), 'handler': handler, 'uri': '{}/'.format(dir_name), 'variables': variables}
+        return {'name': self.build_camel_case_name(dir_name), 'handler': handler, 'uri': '{}/'.format(dir_name), 'variables': variables, 'permissions': permissions}
