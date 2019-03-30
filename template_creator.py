@@ -2,6 +2,7 @@ import coordinator
 import argparse
 from checks import checks
 
+# TODO test, probably while mocking coordinator
 # location = '/Users/samvanovermeire/Documents/transcriptions-backend/'
 parser = argparse.ArgumentParser(description='Create a SAM template for your serverless project')
 parser.add_argument('--location', type=str, dest='location', required=True, help='absolute location of your project')

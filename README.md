@@ -45,14 +45,12 @@ Go:
 
 ### TODO
 
-Overall
-- Add other languages, via strategy
-- Add gif demonstrating capabilities
-- Option to specify folders to look for in project
-- Config option: set memory/timeout on individual lambdas vs globally
-- Ask questions: see you call dynamo, add to template? generate outputs? deploy template?
-
-Improvements
-- Api? Similar to events
-- Generate requirements.txt? -> or does SAM package get the right dependencies?
-- Setup an integration test! (And add more tests)
++++ Api? Similar to events
++++ Generate requirements.txt? -> or does SAM package get the right dependencies?
++++ Setup an integration test! (And add more tests)
++++ Add other languages, via strategy
+++ Add gif demonstrating capabilities
+++ Ask questions: see you call dynamo, add to template? generate outputs? deploy template?
+++ Complete readme
++ Option to specify folders to look for in project
++ Config option: set memory/timeout on individual lambdas vs globally
