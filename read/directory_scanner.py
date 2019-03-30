@@ -22,7 +22,7 @@ def get_language_suffix(language):
 
 
 def is_handler_file(lines):
-    regex = re.compile(r'.*def.*handler.\(*event.*context\)')
+    regex = re.compile(r'\s*def\s.*handler.*\(.*event, context\)')
     result = list(filter(regex.search, lines))
 
     if result:

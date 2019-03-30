@@ -1,5 +1,7 @@
 from ruamel.yaml import YAML
 
+from constants.constants import EVENT_TYPES
+
 
 def write_header():
     return {
@@ -24,11 +26,15 @@ def create_role_name(lambda_name):
     return '{}Role'.format(lambda_name)
 
 
+def create_event_name(lambda_name, event):
+    return '{}{}Event'.format(lambda_name, event)
+
+
 def write_resources(lambdas):
     resources = dict()
 
     for l in lambdas:
-        resources[l['name']] = create_lambda_function(l['name'], l['handler'], l['uri'], l['variables'])
+        resources[l['name']] = create_lambda_function(l['name'], l['handler'], l['uri'], l['variables'], l['events'])
     # nicer effect when we loop again (all roles at the end of the template)
     for l in lambdas:
         resources[create_role_name(l['name'])] = create_role(l['permissions'])
@@ -38,21 +44,30 @@ def write_resources(lambdas):
     }
 
 
-def create_lambda_function(name, handler, uri, variables):
+def create_lambda_function(name, handler, uri, variables, events):
+    generic = {
+        'Type': 'AWS::Serverless::Function',
+        'Properties': {
+            'CodeUri': uri,
+            'Handler': handler,
+            # 'Environment': {'Variables': variables_with_value}, # TODO optional, if there is a value
+            'Role': '!GetAtt {}.Arn'.format(create_role_name(name)),
+        }
+    }
+
     variables_with_value = dict()
 
     for variable in variables:
         variables_with_value[variable] = 'FILL IN VALUE!'
 
-    return {
-        'Type': 'AWS::Serverless::Function',
-        'Properties': {
-            'CodeUri': uri,
-            'Handler': handler,
-            'Environment': {'Variables': variables_with_value},
-            'Role': '!GetAtt {}.Arn'.format(create_role_name(name))
-        }
-    }
+    events_with_value = dict()
+
+    for event in events:
+        events_with_value[create_event_name(name, event)] = EVENT_TYPES[event]
+
+    generic['Properties'].update({'Environment': variables_with_value, 'Events': events_with_value})
+
+    return generic
 
 
 def create_role(permissions):

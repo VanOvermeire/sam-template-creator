@@ -3,6 +3,8 @@ import os
 # this class will also need a strategy to do some stuff - for example, for build_handler (now specifically python)
 import re
 
+from constants.constants import EVENT_TYPES
+
 
 class FileInfo:
     def __init__(self, location, directory, file, handler_line, lines):
@@ -55,10 +57,24 @@ class FileInfo:
 
         return clients
 
+    def find_events(self):
+        lambda_event = self.handler_line[self.handler_line.index('(') + 1:self.handler_line.index('context)')]
+
+        for event in EVENT_TYPES.keys():
+            if event.lower() in lambda_event.lower():
+                return [event]
+
     def build(self):
         dir_name = os.path.relpath(self.directory, self.location)
         handler = self.build_handler()
         variables = self.find_env_variables()
         permissions = self.find_role()
 
-        return {'name': self.build_camel_case_name(dir_name), 'handler': handler, 'uri': '{}/'.format(dir_name), 'variables': variables, 'permissions': permissions}
+        return {
+            'name': self.build_camel_case_name(dir_name),
+            'handler': handler,
+            'uri': '{}/'.format(dir_name),
+            'variables': variables,
+            'events': self.find_events(),
+            'permissions': permissions
+        }
