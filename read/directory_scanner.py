@@ -6,8 +6,8 @@ from read import strategy_builder
 from read.FileInfo import FileInfo
 
 
-def get_number_of_files_for(language, file_names):
-    return len(list(x for x in file_names if x.endswith(language)))
+def get_number_of_files_for(language_suffix, file_names):
+    return len(list(x for x in file_names if x.endswith(language_suffix)))
 
 
 def guess_language(location):
@@ -43,3 +43,4 @@ def find_directory(location, language):
                     file_info = FileInfo(location, a_dir, file, handler_line, lines, strategy)
                     lambdas.append(file_info.build())
     return lambdas
+

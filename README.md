@@ -14,13 +14,21 @@ functions, globals, environment variables, etc.
 
 ## Usage
 
-Run the `create_executable.sh` or clone this project and run `python template_creator.py --location /absolute/path/to/location`. For other optional arguments, use `-h`.
+Run the `create_executable.sh` or clone this project and run `python template_creator.py --location /absolute/path/to/location`. 
 
-This will create a `template.yaml` file in the root of your project's directory. Check its contents! It might point out some things you have to fill in.
+Additional (optional) arguments are:
+- language: can be useful if you think the script will not be able to guess the language (it checks the number of files per language and takes the highest), or if you want to get an older version
+of a runtime (because left by itself, the script will default to the latest version of, for example, python)
+- memory: memory you want to set for your lambdas. Defaults to 512
+- timeout: the timeout for your lambdas. Defaults to 3
+
+The script will create a `template.yaml` file in the root of your project's directory. Check its contents! It might point out some things you have to fill in.
 
 You can then deploy the template to AWS, using 
 
 `aws cloudformation package --template-file template.yaml --s3-bucket YOUR-BUCKET-NAME --output-template-file outputSamTemplate.yaml`
+
+### Notes on usage
 
 *Be aware:* SAM Template Creator requires your project to be organised in a certain way.
 
