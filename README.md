@@ -2,30 +2,27 @@
 
 ## Intro
 
-The SAM Template Creator helps you set up te Infrastructure as Code for an AWS serverless project. 
-
-It produces a template.yaml file, containing a SAM template, which you can then deploy to AWS, using 
-
-`aws cloudformation package --template-file template.yaml --s3-bucket A-BUCKET-NAME --output-template-file outputSamTemplate.yaml`
+The SAM Template Creator helps you set up te Infrastructure as Code for an AWS serverless project. It reads your project folder and generates a SAM template from it, containing the necessary
+functions, globals, environment variables, etc.
 
 ## Requirements
 
 - python 3
 - a project directory to scan 
 
-Right now only python projects are supported.
+*For the moment only python 3 projects are supported. Node, Go and Java are planned.*
 
 ## Usage
 
-Run the `create_executable.sh` or clone this project and run `python template_creator.py`. 
+Run the `create_executable.sh` or clone this project and run `python template_creator.py --location /absolute/path/to/location`. For other optional arguments, use `-h`.
 
-This will create a `template.yaml` file in the root of your project's directory. Check its contents! It might point out some things you have to fill in. 
+This will create a `template.yaml` file in the root of your project's directory. Check its contents! It might point out some things you have to fill in.
 
-### Notes
+You can then deploy the template to AWS, using 
 
-*Warning!* SAM Template Creator requires your project to be organised in a certain way. 
+`aws cloudformation package --template-file template.yaml --s3-bucket YOUR-BUCKET-NAME --output-template-file outputSamTemplate.yaml`
 
-Take note of the following:
+*Be aware:* SAM Template Creator requires your project to be organised in a certain way.
 
 #### Directory
 
@@ -33,31 +30,30 @@ Every lambda should have its own directory, under the root of the project. Other
 
 #### Naming conventions
 
-Python:
+##### Python
+
 - the name of the Lambda handler function should contain the word 'handler'. The event should end with 'event' and the context should be named 'context'. For instance `def lambda_handler(s3event, context):`
 - if the lambda is triggered by an event source, the name should reflect that. So if s3 is the source, the name of the event should contain `s3`, for example `s3event`. Similar for other event sources.
+- we also assume that most of the 'setup' (creating clients and getting environment variables) will happen in the file containing the handler. In the future, we may change this and scan other files for setup as well.
 
-Node:
-- ...
-
-Go:
-- ...
+##### Node
+- TODO
 
 ### TODO
 
-+++ Api? Similar to events
-+++ Generate requirements.txt? -> or does SAM package get the right dependencies?
-+++ Setup an integration test!
-+++ Good unit test coverage
-+++ Add other languages, via strategy
-+++ better extraction of variables/events/...
++++ Api? Similar to events  
++++ Generate requirements.txt? -> or does SAM package get the right dependencies?  
++++ Setup an integration test  
++++ Add other languages, via strategy  
++++ better extraction of variables/events/...  
 
-++ Installer
-++ Add gif demonstrating capabilities
-++ Ask questions: see you call dynamo, add to template? generate outputs? deploy template? -> probably first read and then ask questions before passing info to writer
-++ Complete readme
-++ Output some additional guidance, depending on what was added (events, env vars, etc.)
+++ Installer  
+++ Ask questions: see you call dynamo, add to template? generate outputs? deploy template? -> probably first read and then ask questions before passing info to writer  
+++ Complete readme  
+++ Output some additional guidance, depending on what was added (events, env vars, etc.) -> or ask questions about them  
+++ relative location of project  
 
++ Add gif demonstrating capabilities
 + git hook that creates new exe before pushing to remote
 + Option to specify folders to look for in project
 + Config option: set memory/timeout on individual lambdas vs globally
