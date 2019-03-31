@@ -1,11 +1,8 @@
-from functools import reduce
-
 from ruamel.yaml import YAML
 
-from constants.constants import EVENT_TYPES
+from write import lambda_writer
 
 
-# TODO split up in multiple files
 def write_header():
     return {
         'AWSTemplateFormatVersion': '2010-09-09',
@@ -25,20 +22,13 @@ def write_global_section(language, memory, timeout):
     }
 
 
-def create_role_name(lambda_name):
-    return '{}Role'.format(lambda_name)
-
-
-def create_event_name(lambda_name, event):
-    return '{}{}Event'.format(lambda_name, event)
-
-
 def write_resources(lambdas):
     resources = dict()
 
     for l in lambdas:
-        resources[l['name']] = create_lambda_function(l['name'], l['handler'], l['uri'], l['variables'], l['events'])
+        resources[l['name']] = lambda_writer.create_lambda_function(l['name'], l['handler'], l['uri'], l['variables'], l['events'])
 
+    # TODO this kind of logic does not belong here. yaml writer has to write in the right way, not create new resources
     for l in lambdas:
         if 'S3' in l['events']:
             resources['S3EventBucket'] = {
@@ -48,94 +38,11 @@ def write_resources(lambdas):
 
     # nicer effect when we loop again (all roles at the end of the template)
     for l in lambdas:
-        resources[create_role_name(l['name'])] = create_role(l['permissions'])
+        name, role = lambda_writer.create_role(l['name'], l['permissions'])
+        resources[name] = role
 
     return {
         'Resources': resources
-    }
-
-
-def create_lambda_function(name, handler, uri, variables, events):
-    generic = {
-        'Type': 'AWS::Serverless::Function',
-        'Properties': {
-            'CodeUri': uri,
-            'Handler': handler,
-            'Role': {
-                'Fn::GetAtt': [
-                    create_role_name(name),
-                    'Arn'
-                ]
-            }
-        }
-    }
-
-    add_variables(generic, variables)
-    add_events(events, generic, name)
-
-    return generic
-
-
-def add_events(events, generic, name):
-    events_with_value = dict()
-    if events:
-        for event in events:
-            events_with_value[create_event_name(name, event)] = EVENT_TYPES[event]
-
-        generic['Properties'].update({'Events': events_with_value})
-
-
-def add_variables(generic, variables):
-    variables_with_value = dict()
-
-    if variables:
-        for variable in variables:
-            variables_with_value[variable] = 'Fill in value or delete if not needed'
-
-        generic['Properties'].update({
-            'Environment': {
-                'Variables': variables_with_value
-            }
-        })
-
-
-def create_role(permissions):
-    actions = ['logs:CreateLogStream', 'logs:CreateLogGroup', 'logs:PutLogEvents']
-    actions.extend(permissions)
-
-    return {
-        'Type': 'AWS::IAM::Role',
-        'Properties': {
-            'AssumeRolePolicyDocument': {
-                'Version': '2012-10-17',
-                'Statement': [
-                    {
-                        'Effect': 'Allow',
-                        'Principal': {
-                            'Service': ['lambda.amazonaws.com']
-                        },
-                        'Action': ['sts:AssumeRole']
-                    }
-                ]
-            },
-            'Path': '/',
-            'Policies': [
-                {
-                    'PolicyName': 'LambdaPolicy',
-                    'PolicyDocument': {
-                        'Version': '2012-10-17',
-                        'Statement': [
-                            {
-                                'Effect': 'Allow',
-                                'Action': actions,
-                                'Resource': '*'
-                            }
-
-                        ]
-                    }
-                }
-            ]
-        }
     }
 
 
