@@ -15,7 +15,9 @@ EVENT_TYPES = {
     'S3': {
         'Type': 'S3',
         'Properties': {
-            'Bucket': 'Fill in value and change event - object created - if needed',
+            'Bucket': {
+                'Ref': 'S3EventBucket'
+            },
             'Events': 's3:ObjectCreated:*'
         }
     },

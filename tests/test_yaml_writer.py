@@ -3,7 +3,7 @@ import unittest
 from write import yaml_writer
 
 
-class TestPythonStrategy(unittest.TestCase):
+class TestYamlWriter(unittest.TestCase):
     def test_create_role_adds_correct_permissions(self):
         result = yaml_writer.create_role(['dynamodb:*', 's3:*'])
 
@@ -33,12 +33,14 @@ class TestPythonStrategy(unittest.TestCase):
 
         properties = result['Properties']
 
+        print(properties)
+
         self.assertEqual(properties['CodeUri'], 'uridir')
         self.assertEqual(properties['Handler'], 'file.handler')
-        self.assertEqual(properties['Role'], '!GetAtt HelloLambdaRole.Arn')
-        self.assertEqual(properties['Environment']['BUCKET'], 'Fill in value or delete if not needed')
+        self.assertEqual(properties['Role']['Fn::GetAtt'], ['HelloLambdaRole', 'Arn'])
+        self.assertEqual(properties['Environment']['Variables']['BUCKET'], 'Fill in value or delete if not needed')
         self.assertEqual(properties['Events']['HelloLambdaS3Event']['Type'], 'S3')
-        self.assertEqual(properties['Events']['HelloLambdaS3Event']['Properties']['Bucket'], 'Fill in value and change event - object created - if needed')
+        self.assertEqual(properties['Events']['HelloLambdaS3Event']['Properties']['Bucket']['Ref'], 'S3EventBucket')
         self.assertEqual(properties['Events']['HelloLambdaS3Event']['Properties']['Events'], 's3:ObjectCreated:*')
 
     def test_create_lambda_function_no_events(self):
@@ -50,8 +52,8 @@ class TestPythonStrategy(unittest.TestCase):
 
         self.assertEqual(properties['CodeUri'], 'uridir')
         self.assertEqual(properties['Handler'], 'file.handler')
-        self.assertEqual(properties['Role'], '!GetAtt HelloLambdaRole.Arn')
-        self.assertEqual(properties['Environment']['BUCKET'], 'Fill in value or delete if not needed')
+        self.assertEqual(properties['Role']['Fn::GetAtt'], ['HelloLambdaRole', 'Arn'])
+        self.assertEqual(properties['Environment']['Variables']['BUCKET'], 'Fill in value or delete if not needed')
         self.assertFalse('Events' in properties)
 
     def test_create_lambda_function_no_variables(self):
@@ -63,9 +65,9 @@ class TestPythonStrategy(unittest.TestCase):
 
         self.assertEqual(properties['CodeUri'], 'uridir')
         self.assertEqual(properties['Handler'], 'file.handler')
-        self.assertEqual(properties['Role'], '!GetAtt HelloLambdaRole.Arn')
+        self.assertEqual(properties['Role']['Fn::GetAtt'], ['HelloLambdaRole', 'Arn'])
         self.assertEqual(properties['Events']['HelloLambdaS3Event']['Type'], 'S3')
-        self.assertEqual(properties['Events']['HelloLambdaS3Event']['Properties']['Bucket'], 'Fill in value and change event - object created - if needed')
+        self.assertEqual(properties['Events']['HelloLambdaS3Event']['Properties']['Bucket']['Ref'], 'S3EventBucket')
         self.assertEqual(properties['Events']['HelloLambdaS3Event']['Properties']['Events'], 's3:ObjectCreated:*')
         self.assertFalse('Environment' in properties)
 
@@ -78,6 +80,6 @@ class TestPythonStrategy(unittest.TestCase):
 
         self.assertEqual(properties['CodeUri'], 'uridir')
         self.assertEqual(properties['Handler'], 'file.handler')
-        self.assertEqual(properties['Role'], '!GetAtt HelloLambdaRole.Arn')
+        self.assertEqual(properties['Role']['Fn::GetAtt'], ['HelloLambdaRole', 'Arn'])
         self.assertFalse('Events' in properties)
         self.assertFalse('Environment' in properties)

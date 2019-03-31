@@ -1,8 +1,11 @@
+from functools import reduce
+
 from ruamel.yaml import YAML
 
 from constants.constants import EVENT_TYPES
 
 
+# TODO split up in multiple files
 def write_header():
     return {
         'AWSTemplateFormatVersion': '2010-09-09',
@@ -35,6 +38,14 @@ def write_resources(lambdas):
 
     for l in lambdas:
         resources[l['name']] = create_lambda_function(l['name'], l['handler'], l['uri'], l['variables'], l['events'])
+
+    for l in lambdas:
+        if 'S3' in l['events']:
+            resources['S3EventBucket'] = {
+                'Type': 'AWS::S3::Bucket'
+            }
+            break
+
     # nicer effect when we loop again (all roles at the end of the template)
     for l in lambdas:
         resources[create_role_name(l['name'])] = create_role(l['permissions'])
@@ -50,7 +61,12 @@ def create_lambda_function(name, handler, uri, variables, events):
         'Properties': {
             'CodeUri': uri,
             'Handler': handler,
-            'Role': '!GetAtt {}.Arn'.format(create_role_name(name)),
+            'Role': {
+                'Fn::GetAtt': [
+                    create_role_name(name),
+                    'Arn'
+                ]
+            }
         }
     }
 
@@ -62,18 +78,25 @@ def create_lambda_function(name, handler, uri, variables, events):
 
 def add_events(events, generic, name):
     events_with_value = dict()
-    for event in events:
-        events_with_value[create_event_name(name, event)] = EVENT_TYPES[event]
-    if events_with_value:
+    if events:
+        for event in events:
+            events_with_value[create_event_name(name, event)] = EVENT_TYPES[event]
+
         generic['Properties'].update({'Events': events_with_value})
 
 
 def add_variables(generic, variables):
     variables_with_value = dict()
-    for variable in variables:
-        variables_with_value[variable] = 'Fill in value or delete if not needed'
-    if variables_with_value:
-        generic['Properties'].update({'Environment': variables_with_value})
+
+    if variables:
+        for variable in variables:
+            variables_with_value[variable] = 'Fill in value or delete if not needed'
+
+        generic['Properties'].update({
+            'Environment': {
+                'Variables': variables_with_value
+            }
+        })
 
 
 def create_role(permissions):
@@ -95,7 +118,7 @@ def create_role(permissions):
                     }
                 ]
             },
-            'Path': '"/',
+            'Path': '/',
             'Policies': [
                 {
                     'PolicyName': 'LambdaPolicy',

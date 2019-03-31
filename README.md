@@ -26,7 +26,7 @@ The script will create a `template.yaml` file in the root of your project's dire
 
 You can then deploy the template to AWS, using 
 
-`aws cloudformation package --template-file template.yaml --s3-bucket YOUR-BUCKET-NAME --output-template-file outputSamTemplate.yaml`
+`aws cloudformation package --template-file template.yaml --s3-bucket YOUR-BUCKET-NAME --output-template-file outputSamTemplate.yaml --capabilities CAPABILITY_IAM`
 
 ### Notes on usage
 
@@ -53,10 +53,11 @@ Every lambda should have its own directory, under the root of the project. Other
 +++ Generate requirements.txt? -> or does SAM package get the right dependencies?  
 +++ Setup an integration test  
 +++ Add other languages, via strategy  
-+++ better extraction of variables/events/...  
++++ better extraction of variables/events/... 
++++ For an S3 event, a bucket in the same template is required -> same for other kinds of events? If so, add logic for that 
 
+++ Ask questions! See you call dynamo, add to template? generate outputs? how many buckets for events? deploy template? -> probably first read and then ask questions before passing info to writer  
 ++ Installer  
-++ Ask questions: see you call dynamo, add to template? generate outputs? deploy template? -> probably first read and then ask questions before passing info to writer  
 ++ Complete readme  
 ++ Output some additional guidance, depending on what was added (events, env vars, etc.) -> or ask questions about them  
 ++ relative location of project  
