@@ -26,9 +26,58 @@ class TestPythonStrategy(unittest.TestCase):
 
         self.assertEqual(result, 'HelloLambdaDynamoDBEvent')
 
-    # TODO several tests for this one
     def test_create_lambda_function(self):
-        pass
-        # yaml_writer.create_lambda_function('HelloLambda', 'file.handler', 'uridir', '')
+        result = yaml_writer.create_lambda_function('HelloLambda', 'file.handler', 'uridir', ['BUCKET'], ['S3'])
 
-    # def test_write_resources(self):
+        self.assertEqual(result['Type'], 'AWS::Serverless::Function')
+
+        properties = result['Properties']
+
+        self.assertEqual(properties['CodeUri'], 'uridir')
+        self.assertEqual(properties['Handler'], 'file.handler')
+        self.assertEqual(properties['Role'], '!GetAtt HelloLambdaRole.Arn')
+        self.assertEqual(properties['Environment']['BUCKET'], 'Fill in value or delete if not needed')
+        self.assertEqual(properties['Events']['HelloLambdaS3Event']['Type'], 'S3')
+        self.assertEqual(properties['Events']['HelloLambdaS3Event']['Properties']['Bucket'], 'Fill in value and change event - object created - if needed')
+        self.assertEqual(properties['Events']['HelloLambdaS3Event']['Properties']['Events'], 's3:ObjectCreated:*')
+
+    def test_create_lambda_function_no_events(self):
+        result = yaml_writer.create_lambda_function('HelloLambda', 'file.handler', 'uridir', ['BUCKET'], [])
+
+        self.assertEqual(result['Type'], 'AWS::Serverless::Function')
+
+        properties = result['Properties']
+
+        self.assertEqual(properties['CodeUri'], 'uridir')
+        self.assertEqual(properties['Handler'], 'file.handler')
+        self.assertEqual(properties['Role'], '!GetAtt HelloLambdaRole.Arn')
+        self.assertEqual(properties['Environment']['BUCKET'], 'Fill in value or delete if not needed')
+        self.assertFalse('Events' in properties)
+
+    def test_create_lambda_function_no_variables(self):
+        result = yaml_writer.create_lambda_function('HelloLambda', 'file.handler', 'uridir', [], ['S3'])
+
+        self.assertEqual(result['Type'], 'AWS::Serverless::Function')
+
+        properties = result['Properties']
+
+        self.assertEqual(properties['CodeUri'], 'uridir')
+        self.assertEqual(properties['Handler'], 'file.handler')
+        self.assertEqual(properties['Role'], '!GetAtt HelloLambdaRole.Arn')
+        self.assertEqual(properties['Events']['HelloLambdaS3Event']['Type'], 'S3')
+        self.assertEqual(properties['Events']['HelloLambdaS3Event']['Properties']['Bucket'], 'Fill in value and change event - object created - if needed')
+        self.assertEqual(properties['Events']['HelloLambdaS3Event']['Properties']['Events'], 's3:ObjectCreated:*')
+        self.assertFalse('Environment' in properties)
+
+    def test_create_lambda_function_no_variables_or_events(self):
+        result = yaml_writer.create_lambda_function('HelloLambda', 'file.handler', 'uridir', [], [])
+
+        self.assertEqual(result['Type'], 'AWS::Serverless::Function')
+
+        properties = result['Properties']
+
+        self.assertEqual(properties['CodeUri'], 'uridir')
+        self.assertEqual(properties['Handler'], 'file.handler')
+        self.assertEqual(properties['Role'], '!GetAtt HelloLambdaRole.Arn')
+        self.assertFalse('Events' in properties)
+        self.assertFalse('Environment' in properties)

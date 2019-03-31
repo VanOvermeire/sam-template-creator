@@ -15,6 +15,7 @@ class PythonStrategy:
 
     # TODO for both of these, use set instead of array
     # TODO selection too simple, might not work in more complex situations
+    #  - for example, os.environ[BUCKET] where BUCKET is a variable name
     def find_env_variables(self, lines):
         variables = []
         first_regex = re.compile(r'.*os.environ\[.*')

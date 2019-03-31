@@ -50,30 +50,37 @@ def create_lambda_function(name, handler, uri, variables, events):
         'Properties': {
             'CodeUri': uri,
             'Handler': handler,
-            # 'Environment': {'Variables': variables_with_value}, # TODO optional, if there is a value
             'Role': '!GetAtt {}.Arn'.format(create_role_name(name)),
         }
     }
 
-    variables_with_value = dict()
-
-    for variable in variables:
-        variables_with_value[variable] = 'FILL IN VALUE!'
-
-    events_with_value = dict()
-
-    for event in events:
-        events_with_value[create_event_name(name, event)] = EVENT_TYPES[event]
-
-    generic['Properties'].update({'Environment': variables_with_value, 'Events': events_with_value})
+    add_variables(generic, variables)
+    add_events(events, generic, name)
 
     return generic
+
+
+def add_events(events, generic, name):
+    events_with_value = dict()
+    for event in events:
+        events_with_value[create_event_name(name, event)] = EVENT_TYPES[event]
+    if events_with_value:
+        generic['Properties'].update({'Events': events_with_value})
+
+
+def add_variables(generic, variables):
+    variables_with_value = dict()
+    for variable in variables:
+        variables_with_value[variable] = 'Fill in value or delete if not needed'
+    if variables_with_value:
+        generic['Properties'].update({'Environment': variables_with_value})
 
 
 def create_role(permissions):
     actions = ['logs:CreateLogStream', 'logs:CreateLogGroup', 'logs:PutLogEvents']
     actions.extend(permissions)
-    role = {
+
+    return {
         'Type': 'AWS::IAM::Role',
         'Properties': {
             'AssumeRolePolicyDocument': {
@@ -107,8 +114,6 @@ def create_role(permissions):
             ]
         }
     }
-
-    return role
 
 
 def write(config):

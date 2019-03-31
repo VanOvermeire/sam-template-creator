@@ -1,8 +1,8 @@
-# AWS Serverless Template Creator
+# SAM Template Creator
 
 ## Intro
 
-The AWS Serverless Template Creator helps you set up te Infrastructure as Code for an AWS serverless project. 
+The SAM Template Creator helps you set up te Infrastructure as Code for an AWS serverless project. 
 
 It produces a template.yaml file, containing a SAM template, which you can then deploy to AWS, using 
 
@@ -23,7 +23,7 @@ This will create a `template.yaml` file in the root of your project's directory.
 
 ### Notes
 
-*Warning!* Serverless Template Creator requires your project to be organised in a certain way. 
+*Warning!* SAM Template Creator requires your project to be organised in a certain way. 
 
 Take note of the following:
 
@@ -50,9 +50,10 @@ Go:
 +++ Setup an integration test!
 +++ Good unit test coverage
 +++ Add other languages, via strategy
++++ better extraction of variables/events/...
 
 ++ Add gif demonstrating capabilities
-++ Ask questions: see you call dynamo, add to template? generate outputs? deploy template?
+++ Ask questions: see you call dynamo, add to template? generate outputs? deploy template? -> probably first read and then ask questions before passing info to writer
 ++ Complete readme
 ++ Output some additional guidance, depending on what was added (events, env vars, etc.)
 
