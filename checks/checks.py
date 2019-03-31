@@ -1,4 +1,3 @@
-import subprocess
 import os
 from time import time
 
@@ -20,7 +19,7 @@ def check_template_name(location, template_name):
 
 def check_runtime(language):
     if language is not None and language not in LANGUAGES_WITH_SUFFIXES.keys():
-        print('language {} not in list {}'.format(language, LANGUAGES_WITH_SUFFIXES.keys()))
+        print('language {} not in list {}'.format(language, list(LANGUAGES_WITH_SUFFIXES.keys())))
         return False
     return True
 

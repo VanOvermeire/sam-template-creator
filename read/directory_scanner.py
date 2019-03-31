@@ -18,10 +18,7 @@ def guess_language(location):
     return language
 
 
-def get_language_suffix(language):
-    return LANGUAGES_WITH_SUFFIXES[language]
-
-
+# TODO this is part of the strategy as well, so should go somewhere else
 def is_handler_file(lines):
     regex = re.compile(r'\s*def\s.*handler.*\(.*event, context\)')
     result = list(filter(regex.search, lines))
@@ -46,8 +43,3 @@ def find_directory(location, language):
                     file_info = FileInfo(location, a_dir, file, handler_line, lines, strategy)
                     lambdas.append(file_info.build())
     return lambdas
-
-
-# TODO remove
-# find_directory('/Users/samvanovermeire/Documents/transcription-backend/', '.py')
-# guess_language('/Users/samvanovermeire/Documents/transcription-backend/')

@@ -52,6 +52,7 @@ Go:
 +++ Add other languages, via strategy
 +++ better extraction of variables/events/...
 
+++ Installer
 ++ Add gif demonstrating capabilities
 ++ Ask questions: see you call dynamo, add to template? generate outputs? deploy template? -> probably first read and then ask questions before passing info to writer
 ++ Complete readme

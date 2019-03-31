@@ -3,6 +3,7 @@ import unittest
 from read import directory_scanner
 
 
+# TODO additional tests
 class TestDirectoryScanner(unittest.TestCase):
     def test_is_handler_line_with_handler_present_returns_true(self):
         lines = ['import json\n', 'import os\n', '\n', 'import requests\n', 'import boto3\n', '\n', "db = boto3.client('dynamodb')\n", "var = os.environ['variable']\n", '\n', '\n',
