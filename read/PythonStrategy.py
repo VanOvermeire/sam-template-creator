@@ -39,7 +39,7 @@ class PythonStrategy:
 
         for result in results:
             client = result[result.index('boto3.client(\'') + 14: result.index('\')')]
-            clients.add('{}:*'.format(client))  # TODO may not work for all clients - check
+            clients.add('{}:*'.format(client))
 
         return list(clients)
 

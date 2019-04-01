@@ -22,24 +22,31 @@ def write_global_section(language, memory, timeout):
     }
 
 
-def write_resources(lambdas):
+def write_lambdas(lambdas):
     resources = dict()
 
     for l in lambdas:
         resources[l['name']] = lambda_writer.create_lambda_function(l['name'], l['handler'], l['uri'], l['variables'], l['events'])
 
-    # TODO this kind of logic does not belong here. yaml writer has to write in the right way, not create new resources
-    for l in lambdas:
-        if 'S3' in l['events']:
-            resources['S3EventBucket'] = {
-                'Type': 'AWS::S3::Bucket'
-            }
-            break
+    return resources
 
-    # nicer effect when we loop again (all roles at the end of the template)
+
+def write_roles(lambdas):
+    resources = dict()
+
     for l in lambdas:
         name, role = lambda_writer.create_role(l['name'], l['permissions'])
         resources[name] = role
+
+    return resources
+
+
+def write_all_resources(lambdas, other_resources):
+    resources = dict()
+
+    resources.update(write_lambdas(lambdas))
+    resources.update(write_roles(lambdas))
+    resources.update(other_resources)
 
     return {
         'Resources': resources
@@ -52,6 +59,6 @@ def write(config):
     with open(config['location'], 'w') as yamlFile:
         complete_dict = write_header()
         complete_dict.update(write_global_section(config['language'], config['memory'], config['timeout']))
-        complete_dict.update(write_resources(config['lambdas']))
+        complete_dict.update(write_all_resources(config['lambdas'], config['other_resources']))
 
         yaml.dump(complete_dict, yamlFile)

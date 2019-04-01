@@ -1,6 +1,7 @@
 from checks import checks
 from read import directory_scanner
 from write import yaml_writer
+from middleware import transformer
 
 DEFAULT_TEMPLATE_NAME = 'template.yaml'
 
@@ -22,6 +23,10 @@ def create_template(location, language, timeout, memory):
         memory = 512
 
     lambdas = directory_scanner.find_directory(location, language)
+    other_resources = transformer.add_to_resources(lambdas)
+
     template_location = full_location_template(location, DEFAULT_TEMPLATE_NAME)
-    yaml_writer.write({'language': language, 'lambdas': lambdas, 'location': template_location, 'memory': memory, 'timeout': timeout})
-    print('Finished writing template to {}'.format(template_location))
+    yaml_writer.write({'language': language, 'lambdas': lambdas, 'other_resources': other_resources,
+                       'location': template_location, 'memory': memory, 'timeout': timeout})
+
+    print('Finished writing to {}. Check the template, there may be some things for you to fill in or edit.'.format(template_location))

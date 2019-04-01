@@ -2,6 +2,8 @@
 
 ## Intro
 
+![Alt Text](https://cl.ly/886452a42910/Screen%252520Recording%2525202019-04-01%252520at%25252006.43%252520PM.gif)
+
 The SAM Template Creator helps you set up te Infrastructure as Code for an AWS serverless project. It reads your project folder and generates a SAM template from it, containing the necessary
 functions, globals, environment variables, etc.
 
@@ -45,24 +47,40 @@ Every lambda should have its own directory, under the root of the project. Other
 - we also assume that most of the 'setup' (creating clients and getting environment variables) will happen in the file containing the handler. In the future, we may change this and scan other files for setup as well.
 
 ##### Node
+
 - TODO
+
+##### Go
+
+- TODO
+
+### Project Structure
+
+There are three main parts to this project
+- read: contains files that help with reading the files in the project. The `FileInfo.py` class reads an individual file and retrieves
+resources and other configuration information. Because files will look very different depending on the language, it uses the strategy pattern
+to aid in these language-specific tasks. For example, when dealing with Python, the `PythonStrategy` class is used.
+- middleware: these files and functions take the information from the read side and do transforms, adding/removing certain config, before this is
+passed to the writers.
+- write: these files are responsible for writing the information to yaml.
+
+Finally, there is a checks directory for checks on input, `coordinator.py`, which coordinates the work of the other files and 
+`template_creator.py`, which contains the argument parser and calls the coordinator.
 
 ### TODO
 
 +++ Api? Similar to events  
-+++ Generate requirements.txt? -> or does SAM package get the right dependencies?  
 +++ Setup an integration test  
 +++ Add other languages, via strategy  
-+++ better extraction of variables/events/... 
++++ better extraction of variables/events/...
++++ Check whether client + * works for permissions of all kinds of services 
 +++ For an S3 event, a bucket in the same template is required -> same for other kinds of events? If so, add logic for that 
 
 ++ Ask questions! See you call dynamo, add to template? generate outputs? how many buckets for events? deploy template? -> probably first read and then ask questions before passing info to writer  
 ++ Installer  
-++ Complete readme  
-++ Output some additional guidance, depending on what was added (events, env vars, etc.) -> or ask questions about them  
-++ relative location of project  
+++ Generate requirements.txt
 
-+ Add gif demonstrating capabilities
++ relative location of project  
 + git hook that creates new exe before pushing to remote
 + Option to specify folders to look for in project
 + Config option: set memory/timeout on individual lambdas vs globally
