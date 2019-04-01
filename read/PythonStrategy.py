@@ -49,3 +49,12 @@ class PythonStrategy:
         for event in EVENT_TYPES.keys():
             if event.lower() in lambda_event.lower():
                 return [event]
+
+    @staticmethod
+    def is_handler_file(lines):
+        regex = re.compile(r'\s*def\s.*handler.*\(.*event, context\)')
+        result = list(filter(regex.search, lines))
+
+        if result:
+            return True, result[0]
+        return False, None

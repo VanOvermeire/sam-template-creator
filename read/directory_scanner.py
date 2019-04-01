@@ -1,4 +1,3 @@
-import re
 from pathlib import Path
 
 from constants.constants import LANGUAGES_WITH_SUFFIXES
@@ -18,16 +17,6 @@ def guess_language(location):
     return language
 
 
-# TODO this is part of the strategy as well, so should go somewhere else
-def is_handler_file(lines):
-    regex = re.compile(r'\s*def\s.*handler.*\(.*event, context\)')
-    result = list(filter(regex.search, lines))
-
-    if result:
-        return True, result[0]
-    return False, None
-
-
 def find_directory(location, language):
     dirs = list([x for x in Path(location).iterdir() if x.is_dir()])
     lambdas = []
@@ -36,11 +25,10 @@ def find_directory(location, language):
         for file in list(a_dir.glob('*' + LANGUAGES_WITH_SUFFIXES[language])):
             with file.open() as opened_file:
                 lines = opened_file.readlines()
-                true, handler_line = is_handler_file(lines)
+                true, handler_line = strategy_builder.is_handler_file_for(language, lines)
 
                 if true:
                     strategy = strategy_builder.build_strategy(language)
                     file_info = FileInfo(location, a_dir, file, handler_line, lines, strategy)
                     lambdas.append(file_info.build())
     return lambdas
-
