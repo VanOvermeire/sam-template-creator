@@ -26,7 +26,7 @@ def write_lambdas(lambdas):
     resources = dict()
 
     for l in lambdas:
-        resources[l['name']] = lambda_writer.create_lambda_function(l['name'], l['handler'], l['uri'], l['variables'], l['events'])
+        resources[l['name']] = lambda_writer.create_lambda_function(l['name'], l['handler'], l['uri'], l['variables'], l['events'], l['api'])
 
     return resources
 

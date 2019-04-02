@@ -1,10 +1,23 @@
 import os
 import re
 
-from constants.constants import EVENT_TYPES
+from constants.constants import EVENT_TYPES, HTTP_METHODS
 
 
 class PythonStrategy:
+
+    def __init__(self, config_location='./read/config/python_iam_exceptions'):
+        self.exceptions = self.build_exception_dict(config_location)
+
+    def build_exception_dict(self, config_location):
+        exceptions = {}
+
+        with open(config_location) as exception_file:
+            for line in exception_file.readlines():
+                split = line.replace('\n', '').strip().split('=')
+                exceptions[split[0]] = split[1]
+
+        return exceptions
 
     def build_handler(self, directory, file, handler_line):
         file_name = os.path.relpath(file, directory)
@@ -12,6 +25,31 @@ class PythonStrategy:
         file_name = file_name[0:file_name.index('.')]
 
         return '{}.{}'.format(file_name, function_name)
+
+    def find_events(self, handler_line):
+        lambda_event = handler_line[handler_line.index('(') + 1:handler_line.index('context)')]
+
+        for event in EVENT_TYPES.keys():
+            if event.lower() in lambda_event.lower():
+                return [event]
+
+    def find_api(self, handler_line):
+        method = []
+        path = ''
+
+        handler_prefix = handler_line[handler_line.index('def') + 4:handler_line.index('handler(')]
+        split_prefix = list(map(lambda x: x.lower(), handler_prefix.split('_')))
+
+        for line in split_prefix:
+            if line in HTTP_METHODS:
+                method = [line]
+            elif len(line) > 0:
+                path = '{}/{}'.format(path, line)
+
+        if len(method) and len(path):
+            method.append(path)
+
+        return method
 
     # TODO selection too simple, might not work in more complex situations
     #  - for example, os.environ[BUCKET] where BUCKET is a variable name
@@ -39,16 +77,13 @@ class PythonStrategy:
 
         for result in results:
             client = result[result.index('boto3.client(\'') + 14: result.index('\')')]
+
+            if client in self.exceptions:
+                client = self.exceptions[client]
+
             clients.add('{}:*'.format(client))
 
         return list(clients)
-
-    def find_events(self, handler_line):
-        lambda_event = handler_line[handler_line.index('(') + 1:handler_line.index('context)')]
-
-        for event in EVENT_TYPES.keys():
-            if event.lower() in lambda_event.lower():
-                return [event]
 
     @staticmethod
     def is_handler_file(lines):

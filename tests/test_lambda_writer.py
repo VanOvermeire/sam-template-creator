@@ -22,7 +22,7 @@ class TestLambdaWriter(unittest.TestCase):
         self.assertEqual(result, 'HelloLambdaDynamoDBEvent')
 
     def test_create_lambda_function(self):
-        result = lambda_writer.create_lambda_function('HelloLambda', 'file.handler', 'uridir', ['BUCKET'], ['S3'])
+        result = lambda_writer.create_lambda_function('HelloLambda', 'file.handler', 'uridir', ['BUCKET'], ['S3'], [])
 
         self.assertEqual(result['Type'], 'AWS::Serverless::Function')
 
@@ -37,7 +37,7 @@ class TestLambdaWriter(unittest.TestCase):
         self.assertEqual(properties['Events']['HelloLambdaS3Event']['Properties']['Events'], 's3:ObjectCreated:*')
 
     def test_create_lambda_function_no_events(self):
-        result = lambda_writer.create_lambda_function('HelloLambda', 'file.handler', 'uridir', ['BUCKET'], [])
+        result = lambda_writer.create_lambda_function('HelloLambda', 'file.handler', 'uridir', ['BUCKET'], [], [])
 
         self.assertEqual(result['Type'], 'AWS::Serverless::Function')
 
@@ -50,7 +50,7 @@ class TestLambdaWriter(unittest.TestCase):
         self.assertFalse('Events' in properties)
 
     def test_create_lambda_function_no_variables(self):
-        result = lambda_writer.create_lambda_function('HelloLambda', 'file.handler', 'uridir', [], ['S3'])
+        result = lambda_writer.create_lambda_function('HelloLambda', 'file.handler', 'uridir', [], ['S3'], [])
 
         self.assertEqual(result['Type'], 'AWS::Serverless::Function')
 
@@ -65,7 +65,7 @@ class TestLambdaWriter(unittest.TestCase):
         self.assertFalse('Environment' in properties)
 
     def test_create_lambda_function_no_variables_or_events(self):
-        result = lambda_writer.create_lambda_function('HelloLambda', 'file.handler', 'uridir', [], [])
+        result = lambda_writer.create_lambda_function('HelloLambda', 'file.handler', 'uridir', [], [], [])
 
         self.assertEqual(result['Type'], 'AWS::Serverless::Function')
 
@@ -76,3 +76,18 @@ class TestLambdaWriter(unittest.TestCase):
         self.assertEqual(properties['Role']['Fn::GetAtt'], ['HelloLambdaRole', 'Arn'])
         self.assertFalse('Events' in properties)
         self.assertFalse('Environment' in properties)
+
+    def test_create_lambda_function_api(self):
+        result = lambda_writer.create_lambda_function('HelloLambda', 'file.handler', 'uridir', [], [], ['get', '/hello/world'])
+
+        self.assertEqual(result['Type'], 'AWS::Serverless::Function')
+
+        print(result)
+
+        properties = result['Properties']
+
+        self.assertEqual(properties['CodeUri'], 'uridir')
+        self.assertEqual(properties['Handler'], 'file.handler')
+        self.assertEqual(properties['Events']['GET']['Type'], 'Api')
+        self.assertEqual(properties['Events']['GET']['Properties']['Path'], '/hello/world')
+        self.assertEqual(properties['Events']['GET']['Properties']['Method'], 'get')

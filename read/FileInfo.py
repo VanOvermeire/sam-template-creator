@@ -22,6 +22,7 @@ class FileInfo:
         variables = self.strategy.find_env_variables(self.lines)
         permissions = self.strategy.find_role(self.lines)
         events = self.strategy.find_events(self.handler_line)
+        api = self.strategy.find_api(self.handler_line)
 
         return {
             'name': name,
@@ -29,5 +30,6 @@ class FileInfo:
             'uri': '{}/'.format(dir_name),
             'variables': variables,
             'events': events,
-            'permissions': permissions
+            'permissions': permissions,
+            'api': api
         }

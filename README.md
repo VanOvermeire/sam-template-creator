@@ -7,6 +7,12 @@
 The SAM Template Creator helps you set up te Infrastructure as Code for an AWS serverless project. It reads your project folder and generates a SAM template from it, containing the necessary
 functions, globals, environment variables, etc.
 
+Compared to a full-fledged framework like Serverless, the scope of this template creator is very *limited*, offer far fewer features. 
+On the other hand, it is very lightweight (only generating the SAM yaml file), simple to use (just run the script) and requires no config, though you 
+do need to follow a few conventions to get the most out of it.
+
+And for very complex use cases, only the original SAM and Cloudformation templates will suffice.
+
 ## Requirements
 
 - python 3
@@ -43,8 +49,10 @@ Every lambda should have its own directory, under the root of the project. Other
 ##### Python
 
 - the name of the Lambda handler function should contain the word 'handler'. The event should end with 'event' and the context should be named 'context'. For instance `def lambda_handler(s3event, context):`
+- if part of the name equals a http method, we assume you want to map it to an api gateway method with the path represented by the rest of the name. For example, if your handler function's name
+is `def put_hello_world_hander(event, context)`, the function is mapped to a PUT to `/hello/world`.
 - if the lambda is triggered by an event source, the name should reflect that. So if s3 is the source, the name of the event should contain `s3`, for example `s3event`. Similar for other event sources.
-- we also assume that most of the 'setup' (creating clients and getting environment variables) will happen in the file containing the handler. In the future, we may change this and scan other files for setup as well.
+- we also assume that most of the 'setup' (creating clients and getting environment variables) will happen in the file containing the handler. This only temporary though. The plan is to scan other files and add their config as well.
 
 ##### Node
 
@@ -64,18 +72,16 @@ to aid in these language-specific tasks. For example, when dealing with Python, 
 passed to the writers.
 - write: these files are responsible for writing the information to yaml.
 
-Finally, there is a checks directory for checks on input, `coordinator.py`, which coordinates the work of the other files and 
-`template_creator.py`, which contains the argument parser and calls the coordinator.
+Finally, there is a checks directory for checks on input, `coordinator.py`, which coordinates the work of the other files and `template_creator.py`,
+which contains the argument parser and calls the coordinator.
 
-### TODO
+### TODO Priorities
 
-+++ Api? Similar to events  
 +++ Setup an integration test  
-+++ Add other languages, via strategy  
-+++ better extraction of variables/events/...
-+++ Check whether client + * works for permissions of all kinds of services 
++++ Add other languages, via strategy
 +++ For an S3 event, a bucket in the same template is required -> same for other kinds of events? If so, add logic for that 
 
+++ Improvements in versatility. For example safer extraction of variables/events/...
 ++ Ask questions! See you call dynamo, add to template? generate outputs? how many buckets for events? deploy template? -> probably first read and then ask questions before passing info to writer  
 ++ Installer  
 ++ Generate requirements.txt

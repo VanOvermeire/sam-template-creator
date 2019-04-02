@@ -32,3 +32,5 @@ EVENT_TYPES = {
     'IoTRule': {},
     'AlexaSkill': {}
 }
+
+HTTP_METHODS = ['get', 'head', 'options', 'post', 'put', 'delete', 'any']

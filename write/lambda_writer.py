@@ -1,7 +1,7 @@
 from constants.constants import EVENT_TYPES
 
 
-def create_lambda_function(name, handler, uri, variables, events):
+def create_lambda_function(name, handler, uri, variables, events, api):
     generic = {
         'Type': 'AWS::Serverless::Function',
         'Properties': {
@@ -17,7 +17,8 @@ def create_lambda_function(name, handler, uri, variables, events):
     }
 
     add_variables(generic, variables)
-    add_events(events, generic, name)
+    add_events(generic, events, name)
+    add_api(generic, api)
 
     return generic
 
@@ -30,7 +31,7 @@ def create_role_name(lambda_name):
     return '{}Role'.format(lambda_name)
 
 
-def add_events(events, generic, name):
+def add_events(generic, events, name):
     events_with_value = dict()
     if events:
         for event in events:
@@ -49,6 +50,24 @@ def add_variables(generic, variables):
         generic['Properties'].update({
             'Environment': {
                 'Variables': variables_with_value
+            }
+        })
+
+
+def add_api(generic, api):
+    if api:
+        method = api[0]
+        path = api[1]
+
+        generic['Properties'].update({
+            'Events': {
+                method.upper(): {
+                    'Type': 'Api',
+                    'Properties': {
+                        'Path': path,
+                        'Method': method
+                    }
+                }
             }
         })
 
