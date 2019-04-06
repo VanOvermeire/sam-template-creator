@@ -5,7 +5,7 @@ from middleware import transformer
 
 class TestTransformer(unittest.TestCase):
     def test(self):
-        lambdas = [{'events': ['S3', 'SNS']}]
+        lambdas = [{'events': {}}, {'events': ['S3', 'SNS']}]
 
         result = transformer.add_to_resources(lambdas)
 

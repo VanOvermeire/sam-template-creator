@@ -6,6 +6,6 @@ def add_to_resources(lambdas):
             resources['S3EventBucket'] = {
                 'Type': 'AWS::S3::Bucket'
             }
-        break
+            break
 
     return resources
