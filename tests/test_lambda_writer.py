@@ -82,8 +82,6 @@ class TestLambdaWriter(unittest.TestCase):
 
         self.assertEqual(result['Type'], 'AWS::Serverless::Function')
 
-        print(result)
-
         properties = result['Properties']
 
         self.assertEqual(properties['CodeUri'], 'uridir')

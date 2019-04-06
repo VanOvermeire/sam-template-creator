@@ -23,9 +23,8 @@ def create_template(location, language, timeout, memory):
         memory = 512
 
     lambdas = directory_scanner.find_directory(location, language)
-    print(lambdas)
+
     other_resources = transformer.add_to_resources(lambdas)
-    print(other_resources)
 
     template_location = full_location_template(location, DEFAULT_TEMPLATE_NAME)
     yaml_writer.write({'language': language, 'lambdas': lambdas, 'other_resources': other_resources,
