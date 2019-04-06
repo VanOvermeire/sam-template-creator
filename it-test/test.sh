@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# quite simple, can be expanded later on
+
 function checkStatus() {
     if [[ $? -gt 0 ]]; then
         echo "$1 failed"

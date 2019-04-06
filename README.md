@@ -21,7 +21,7 @@ And for very complex use cases, only the original [SAM][1] and Cloudformation te
 - python 3
 - a project directory to scan 
 
-*For the moment only python 3 projects are supported. Node, Go and Java are planned.*
+*Currently only Python projects are supported. Node, Go and Java are planned.*
 
 ## Usage
 
@@ -78,14 +78,18 @@ passed to the writers.
 Finally, there is a checks directory for checks on input, `coordinator.py`, which coordinates the work of the other files and `template_creator.py`,
 which contains the argument parser and calls the coordinator.
 
+### Tests
+
+Unit tests can be run with python -m unittest. A relatively simple it test is run with the bash script under the it-test folder. It requires a bucket for uploading the lambda zip.
+
 ### TODO
 
 +++ Add other languages, via strategy  
 +++ Ask some questions. See you call dynamo, add to template? generate outputs? how many buckets for events? deploy template? use 'middleware' for this 
 
-++ Installer?  
+++ Installer instead of cloning/executable?  
 ++ Generate requirements.txt for python projects  
 ++ relative location of project  
-++ git hook that creates new exe before pushing to remote
-++ Option to specify folders to look for in project
+++ git hook that creates new exe before pushing to remote  
+++ Option to specify folders to look for in project  
 ++ Config option: set memory/timeout on individual lambdas vs globally
