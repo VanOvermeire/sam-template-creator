@@ -80,12 +80,10 @@ which contains the argument parser and calls the coordinator.
 
 ### TODO
 
-++++ Setup an integration test  
-++++ Add other languages, via strategy  
- 
-+++ Ask (limited) questions. See you call dynamo, add to template? generate outputs? how many buckets for events? deploy template? -> probably first read and then ask questions before passing info to writer  
-+++ Installer  
++++ Add other languages, via strategy  
++++ Ask some questions. See you call dynamo, add to template? generate outputs? how many buckets for events? deploy template? use 'middleware' for this 
 
+++ Installer?  
 ++ Generate requirements.txt for python projects  
 ++ relative location of project  
 ++ git hook that creates new exe before pushing to remote

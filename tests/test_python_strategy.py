@@ -10,7 +10,7 @@ class TestPythonStrategy(unittest.TestCase):
                       '# this is the lambda\n', 'def lambda_handler(s3event, context):\n', '    return {\n', '        "statusCode": 200,\n',
                       '        "body": json.dumps({\n', '            "message": "hello world",\n', '        }),\n', '    }\n']
         self.hander_line = 'def my_handler(s3event, context):'
-        self.strategy = PythonStrategy('../read/config/python_iam_exceptions')
+        self.strategy = PythonStrategy()
 
     def test_find_env_variables(self):
         result = self.strategy.find_env_variables(self.lines)

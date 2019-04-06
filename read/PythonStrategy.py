@@ -2,23 +2,10 @@ import os
 import re
 
 from constants.constants import EVENT_TYPES, HTTP_METHODS
+from read.config.python_iam_exceptions import EXCEPTIONS
 
 
 class PythonStrategy:
-
-    def __init__(self, config_location='./read/config/python_iam_exceptions'):
-        self.exceptions = self.build_exception_dict(config_location)
-
-    def build_exception_dict(self, config_location):
-        exceptions = {}
-
-        with open(config_location) as exception_file:
-            for line in exception_file.readlines():
-                split = line.replace('\n', '').strip().split('=')
-                exceptions[split[0]] = split[1]
-
-        return exceptions
-
     def build_handler(self, directory, file, handler_line):
         file_name = os.path.relpath(file, directory)
         function_name = handler_line[handler_line.index('def') + 4:handler_line.index('(')]
@@ -79,8 +66,8 @@ class PythonStrategy:
         for result in results:
             client = result[result.index('boto3.client(\'') + 14: result.index('\')')]
 
-            if client in self.exceptions:
-                client = self.exceptions[client]
+            if client in EXCEPTIONS:
+                client = EXCEPTIONS[client]
 
             clients.add('{}:*'.format(client))
 
