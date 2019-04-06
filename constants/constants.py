@@ -9,8 +9,10 @@ LANGUAGES_WITH_SUFFIXES = {
     'go1.x': '.go'
 }
 
+HTTP_METHODS = ['get', 'head', 'options', 'post', 'put', 'delete', 'any']
 
-# TODO add other event types (and check whether they work with underscores, for example sns_event)
+# api is handled separately
+# schedule? cloudwatch event? alexa skill?
 EVENT_TYPES = {
     'S3': {
         'Type': 'S3',
@@ -21,16 +23,49 @@ EVENT_TYPES = {
             'Events': 's3:ObjectCreated:*'
         }
     },
-    'SNS': {},
-    'Kinesis': {},
-    'DynamoDB': {},
-    'SQS': {},
-    'Api': {},
-    'Schedule': {},
-    'CloudWatchEvent': {},
-    'CloudWatchLogs': {},
-    'IoTRule': {},
-    'AlexaSkill': {}
+    'SNS': {
+        'Type': 'SNS',
+        'Properties': {
+            'Topic': 'ARN-OF-YOUR-TOPIC'
+        }
+    },
+    'Kinesis': {
+        'Type': 'Kinesis',
+        'Properties': {
+            'Stream': 'ARN-OF-YOUR-STREAM',
+            'StartingPosition': 'TRIM_HORIZON',
+            'BatchSize': 10,
+            'Enabled': True
+        }
+    },
+    'DynamoDB': {
+        'Type': 'DynamoDB',
+        'Properties': {
+            'Stream': 'ARN-OF-YOUR-STREAM',
+            'StartingPosition': 'TRIM_HORIZON',
+            'BatchSize': 10,
+            'Enabled': True
+        }
+    },
+    'SQS': {
+        'Type': 'SQS',
+        'Properties': {
+            'Queue': 'ARN-OF-YOUR-QUEUE',
+            'BatchSize': 10,
+            'Enabled': True
+        }
+    },
+    'CloudWatchLogs': {
+        'Type': 'CloudWatchLogs',
+        'Properties': {
+            'LogGroupName': 'NAME-OF-CLOUDWATCH-LOG-GROUP',
+            'FilterPattern': 'Error'
+        }
+    },
+    'IoTRule': {
+        'Type': 'IoTRule',
+        'Properties': {
+            'Sql': '"SELECT * FROM example"'
+        }
+    }
 }
-
-HTTP_METHODS = ['get', 'head', 'options', 'post', 'put', 'delete', 'any']

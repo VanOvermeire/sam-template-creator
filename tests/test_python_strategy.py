@@ -36,6 +36,11 @@ class TestPythonStrategy(unittest.TestCase):
 
         self.assertEqual(result, ['S3'])
 
+    def test_find_events_with_underscore_in_name_event(self):
+        result = self.strategy.find_events('def my_handler(sqs_event, context):')
+
+        self.assertEqual(result, ['SQS'])
+
     def test_build_handler(self):
         result = self.strategy.build_handler('/some/location/dir_of_lambda', '/some/location/dir_of_lambda/file.py', self.hander_line)
 

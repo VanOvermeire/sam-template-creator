@@ -53,6 +53,7 @@ class PythonStrategy:
 
     # TODO selection too simple, might not work in more complex situations
     #  - for example, os.environ[BUCKET] where BUCKET is a variable name
+    #  similar safety improvements for other methods here
     def find_env_variables(self, lines):
         variables = set()
         first_regex = re.compile(r'.*os.environ\[.*')

@@ -4,14 +4,17 @@
 
 ![Alt Text](https://cl.ly/886452a42910/Screen%252520Recording%2525202019-04-01%252520at%25252006.43%252520PM.gif)
 
-The SAM Template Creator helps you set up te Infrastructure as Code for an AWS serverless project. It reads your project folder and generates a SAM template from it, containing the necessary
+The SAM Template Creator helps you set up te Infrastructure as Code for an AWS serverless project. It reads your project folder and generates a [SAM template][1] from it, containing the necessary
 functions, globals, environment variables, etc.
 
-Compared to a full-fledged framework like Serverless, the scope of this template creator is very *limited*, offer far fewer features. 
+Compared to a full-fledged framework like [Serverless][2], the scope of this template creator is very *limited*, offer far fewer features. 
 On the other hand, it is very lightweight (only generating the SAM yaml file), simple to use (just run the script) and requires no config, though you 
 do need to follow a few conventions to get the most out of it.
 
-And for very complex use cases, only the original SAM and Cloudformation templates will suffice.
+And for very complex use cases, only the original [SAM][1] and Cloudformation templates will suffice.
+
+[1]: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md
+[2]: https://serverless.com/
 
 ## Requirements
 
@@ -75,18 +78,16 @@ passed to the writers.
 Finally, there is a checks directory for checks on input, `coordinator.py`, which coordinates the work of the other files and `template_creator.py`,
 which contains the argument parser and calls the coordinator.
 
-### TODO Priorities
+### TODO
 
-+++ Setup an integration test  
-+++ Add other languages, via strategy
-+++ For an S3 event, a bucket in the same template is required -> same for other kinds of events? If so, add logic for that 
+++++ Setup an integration test  
+++++ Add other languages, via strategy  
+ 
++++ Ask (limited) questions. See you call dynamo, add to template? generate outputs? how many buckets for events? deploy template? -> probably first read and then ask questions before passing info to writer  
++++ Installer  
 
-++ Improvements in versatility. For example safer extraction of variables/events/...
-++ Ask questions! See you call dynamo, add to template? generate outputs? how many buckets for events? deploy template? -> probably first read and then ask questions before passing info to writer  
-++ Installer  
-++ Generate requirements.txt
-
-+ relative location of project  
-+ git hook that creates new exe before pushing to remote
-+ Option to specify folders to look for in project
-+ Config option: set memory/timeout on individual lambdas vs globally
+++ Generate requirements.txt for python projects  
+++ relative location of project  
+++ git hook that creates new exe before pushing to remote
+++ Option to specify folders to look for in project
+++ Config option: set memory/timeout on individual lambdas vs globally
