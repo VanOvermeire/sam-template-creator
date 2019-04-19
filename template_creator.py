@@ -1,9 +1,6 @@
 import coordinator
 import argparse
-from checks import checks
-
-
-# location = '/Users/samvanovermeire/Documents/transcriptions-backend/'
+from util import input_checks
 
 
 def main():
@@ -15,10 +12,10 @@ def main():
 
     args = parser.parse_args()
 
-    if not checks.config_checks(args.language, args.timeout, args.memory):
+    if not input_checks.config_checks(args.language, args.timeout, args.memory):
         exit(1)
 
-    coordinator.create_template(args.location, args.language, args.timeout, args.memory)
+    coordinator.find_resources_and_create_yaml_template(args.location, args.language, args.timeout, args.memory)
 
 
 if __name__ == "__main__":

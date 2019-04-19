@@ -1,6 +1,6 @@
 import unittest
 
-from read import directory_scanner
+from reader import directory_scanner
 
 
 class TestDirectoryScanner(unittest.TestCase):

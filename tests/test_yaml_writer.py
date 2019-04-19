@@ -1,6 +1,6 @@
 import unittest
 
-from write import yaml_writer
+from writer import yaml_writer
 
 
 class TestYamlWriter(unittest.TestCase):

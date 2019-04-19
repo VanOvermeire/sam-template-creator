@@ -1,6 +1,6 @@
 import unittest
 
-from read.PythonStrategy import PythonStrategy
+from reader.PythonStrategy import PythonStrategy
 
 
 class TestPythonStrategy(unittest.TestCase):

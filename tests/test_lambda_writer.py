@@ -1,6 +1,6 @@
 import unittest
 
-from write import lambda_writer
+from writer import lambda_writer
 
 
 class TestLambdaWriter(unittest.TestCase):

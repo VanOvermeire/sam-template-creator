@@ -1,0 +1,17 @@
+EXCEPTIONS = {
+    'alexaforbusiness': 'a4b',
+    'apigateway': 'execute-api',
+    'cloudhsmv2': 'cloudhsm',
+    'dynamodbstreams': 'dynamodb',
+    'efs': 'elasticfilesystem',
+    'elb': 'elasticloadbalancing',
+    'elbv2': 'elasticloadbalancing',
+    'emr': 'elasticmapreduce',
+    'lex-models': 'lex',
+    'meteringmarketplace': 'aws-marketplace',
+    'mobile': 'mobilehub',
+    'mturk': 'mechanicalturk',
+    'neptune': 'neptune-db',
+    'pinpoint-sms-voice': 'sms-voice',
+    'stepfunctions': 'states',
+}
