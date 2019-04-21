@@ -2,7 +2,7 @@
 
 ## Intro
 
-![Alt Text](https://cl.ly/886452a42910/Screen%252520Recording%2525202019-04-01%252520at%25252006.43%252520PM.gif)
+![Alt Text](https://cl.ly/21b792e2627b/Screen%252520Recording%2525202019-04-21%252520at%25252010.56%252520AM.gif)
 
 The SAM Template Creator helps you set up Infrastructure as Code for an AWS serverless project.
 It reads your project folder and generates a [SAM template][1] containing the necessary functions, globals, environment variables, etc.
@@ -18,14 +18,16 @@ Finally, for very complex use cases only original, hand-coded [SAM][1] or Cloudf
 
 ## Requirements
 
-- python 3
+- python 3 and pip
 - a project directory to scan 
 
 *Currently only Python projects are supported. Node, Go and Java are planned.*
 
 ## Usage
 
-Run the `create_executable.sh` or clone this project and run `python template_creator.py --location /absolute/path/to/project`. 
+Install with `pip install sam-template-creator` or `pip3 install sam-template-creator`.
+
+You can now run the following command, with its one required argument: `sam-template-creator --location /absolute/path/to/project`
 
 Additional (optional) arguments are:
 - language: can be useful if you think the script will not be able to guess the language (it checks the number of files per language and takes the highest), 
@@ -38,8 +40,6 @@ The script will create a `template.yaml` file in the root of your project's dire
 You can then deploy the template to AWS, using 
 
 `aws cloudformation package --template-file template.yaml --s3-bucket YOUR-BUCKET-NAME --output-template-file outputSamTemplate.yaml --capabilities CAPABILITY_IAM`
-
-and
 
 `aws cloudformation deploy --template-file outputSamTemplate.yaml --stack-name YOUR-STACK_NAME --capabilities CAPABILITY_IAM`
 
@@ -75,14 +75,14 @@ This a temporary limitation. The plan is to scan other files and add their confi
 ### Project Structure
 
 There are three main parts to this project
-- reader: contains files that help with reading the files in the project. The `FileInfo.py` class reads an individual file and retrieves
+- `reader`: contains files that help with reading the files in the project. The `FileInfo.py` class reads an individual file and retrieves
 resources and other configuration information. Because files will look very different depending on the language, it uses the strategy pattern
 to aid in these language-specific tasks. For example, when dealing with Python, the `PythonStrategy` class is used.
-- middleware: these files and functions take the information from the read side and do transforms, adding/removing certain config, before this is
+- `middleware`: these files and functions take the information from the read side and do transforms, adding/removing certain config, before this is
 passed to the writers.
-- writer: these files are responsible for writing the information to yaml.
+- `writer`: these files are responsible for writing the information to yaml.
 
-Besides these folders, there is a util folder, the `coordinator.py` file which coordinates the work of the other files and the `template_creator.py`,
+Besides these folders, there is a `util` folder, the `coordinator.py` file which coordinates the work of the other files and the `template_creator.py`,
 which contains the argument parser and calls the coordinator.
 
 ### Tests
@@ -94,7 +94,6 @@ It requires a bucket as argument (for uploading the lambda zip) and [default AWS
 
 ### Planned improvements
 
-* Installation via pip!
 * Languages
     * Node
     * Go

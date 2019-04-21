@@ -4,7 +4,7 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setup(name='sam-template-creator',
-      version='0.1',
+      version='0.0.1',
       description='Creates a SAM template for a given project',
       long_description=long_description,
       url='https://github.com/VanOvermeire/sam-template-creator',
@@ -16,6 +16,6 @@ setup(name='sam-template-creator',
       ],
       packages=find_packages(exclude=["*.tests", "*.tests.*", "tests.*", "tests"]),
       entry_points={
-            'console_scripts': ['template-creator=template_creator.command_line:main'],
+            'console_scripts': ['sam-template-creator=template_creator.command_line:main'],
       },
       zip_safe=False)
