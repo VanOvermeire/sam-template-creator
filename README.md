@@ -67,16 +67,20 @@ For example, if your handler function's name is `def put_hello_world_hander(even
 - if the lambda is triggered by an event source, the name should reflect that. 
 For example, if s3 is the source, the name of the event should contain `s3`, like this: `s3event` or `s3_event` or...
 
-##### Node
-
-- TODO
-
 ##### Go
 
 - if you want to map a function to an api gateway method, the lambda handler should end with the word Request, with the path and method prepended to this word.
 For example, `func PostAddHelloRequest(_ context.Context, event events.APIGatewayProxyRequest) error` is mapped to a `POST` to `/add/hello`.
 - if the lambda is triggered by an event source, the name should reflect that. 
 For example, if s3 is the source, the name of the event should contain `s3`, like this: `s3event` or `s3_event` or...
+
+##### Node
+
+- TODO
+
+##### Java
+
+- TODO
 
 ### Project Structure
 
@@ -88,7 +92,7 @@ to aid in these language-specific tasks. For example, when dealing with Python, 
 passed to the writers.
 - `writer`: these files are responsible for writing the information to yaml.
 
-Besides these folders, there is a `util` folder, the `coordinator.py` file which coordinates the work of the other files and the `template_creator.py`,
+Besides these folders, there is a `util` folder, the `coordinator.py` file which coordinates the work of the other files and the `command_line.py`,
 which contains the argument parser and calls the coordinator.
 
 ### Tests
@@ -104,9 +108,9 @@ It requires a bucket as argument (for uploading the lambda zip) and [default AWS
     * Go (in progress)
     * Node
     * Java
+* Scan other files in the lambda folder, maybe follow imports/requires/..., to find more environment variables and needed permissions  
 * Robust error handling 
 * Ask questions. See you call dynamo, add to template? generate outputs? how many buckets for events? deploy template? use 'middleware' for this 
-* Scan other files in the lambda folder, maybe follow imports/requires/..., to find more environment variables and needed permissions
 * Relative location of project  
 * Config option: set memory/timeout on individual lambdas vs globally  
 * Option to specify which kind of folders in project contain lambdas  
