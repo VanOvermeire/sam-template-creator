@@ -33,3 +33,6 @@ class FileInfo:
             'permissions': permissions,
             'api': api
         }
+
+    def __repr__(self):
+        return '{}({}, {}, {}, {}, {}, {})'.format(self.__class__.__name__, self.location, self.directory, self.file, self.handler_line, self.lines, self.strategy)

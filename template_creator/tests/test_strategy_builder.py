@@ -2,6 +2,7 @@ import unittest
 
 from template_creator.reader import language_strategy_builder
 from template_creator.reader.PythonStrategy import PythonStrategy
+from template_creator.util.template_errors import LanguageError
 
 
 class TestStrategyBuilder(unittest.TestCase):
@@ -11,7 +12,7 @@ class TestStrategyBuilder(unittest.TestCase):
         self.assertTrue(isinstance(result, PythonStrategy))
 
     def test_build_strategy_throws_exception_for_unknown_language(self):
-        with self.assertRaises(Exception):
+        with self.assertRaises(LanguageError):
             language_strategy_builder.build_strategy('fake')
 
     def test_is_handler_line_with_handler_present_returns_true(self):

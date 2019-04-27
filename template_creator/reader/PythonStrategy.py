@@ -81,3 +81,6 @@ class PythonStrategy:
         if result:
             return True, result[0]
         return False, None
+
+    def __repr__(self):
+        return self.__class__.__name__
