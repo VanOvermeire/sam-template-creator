@@ -51,6 +51,11 @@ You can then deploy the template to AWS, using
 
 Every lambda should have its own directory, under the root of the project. Other files can be present in the same directory.
 
+#### Temporary limitation
+
+We assume that most of the 'setup' (creating clients and getting environment variables) will happen in the file containing the handler. 
+This a temporary limitation. The plan is to scan other files and add their config as well.
+
 #### Naming conventions
 
 ##### Python
@@ -61,8 +66,6 @@ For instance `def lambda_handler(s3event, context)`
 For example, if your handler function's name is `def put_hello_world_hander(event, context)`, the function is mapped to a `PUT` to `/hello/world`.
 - if the lambda is triggered by an event source, the name should reflect that. 
 For example, if s3 is the source, the name of the event should contain `s3`, like this: `s3event` or `s3_event` or...
-- we assume that most of the 'setup' (creating clients and getting environment variables) will happen in the file containing the handler. 
-This a temporary limitation. The plan is to scan other files and add their config as well.
 
 ##### Node
 
@@ -70,7 +73,10 @@ This a temporary limitation. The plan is to scan other files and add their confi
 
 ##### Go
 
-- TODO
+- if you want to map a function to an api gateway method, the lambda handler should end with the word Request, with the path and method prepended to this word.
+For example, `func PostAddHelloRequest(_ context.Context, event events.APIGatewayProxyRequest) error` is mapped to a `POST` to `/add/hello`.
+- if the lambda is triggered by an event source, the name should reflect that. 
+For example, if s3 is the source, the name of the event should contain `s3`, like this: `s3event` or `s3_event` or...
 
 ### Project Structure
 
@@ -96,11 +102,11 @@ It requires a bucket as argument (for uploading the lambda zip) and [default AWS
 
 * Languages
     * Node
-    * Go
-    * Java 
+    * Go (in progress)
+    * Java
+* Robust error handling 
 * Ask questions. See you call dynamo, add to template? generate outputs? how many buckets for events? deploy template? use 'middleware' for this 
-* Scan other files in the lambda folder, maybe follow imports/requires/...
-* Generate requirements.txt for python projects  
+* Scan other files in the lambda folder, maybe follow imports/requires/..., to find more environment variables and needed permissions
 * Relative location of project  
-* Config option: set memory/timeout on individual lambdas vs globally
-* Option to specify which kind of folders in project contain lambdas
+* Config option: set memory/timeout on individual lambdas vs globally  
+* Option to specify which kind of folders in project contain lambdas  

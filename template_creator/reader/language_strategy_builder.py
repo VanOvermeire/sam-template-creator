@@ -1,9 +1,12 @@
 from template_creator.reader.PythonStrategy import PythonStrategy
+from template_creator.reader.GoStrategy import GoStrategy
 from template_creator.util.template_errors import LanguageError
 
 STRATEGIES = {
-    'python3.7|python3.6|python2.7': PythonStrategy
-    # other languages, like node
+    'python3.7|python3.6|python2.7': PythonStrategy,
+    'go1.x': GoStrategy
+    # java8
+    # nodejs8.10 nodejs6.10
 }
 
 
