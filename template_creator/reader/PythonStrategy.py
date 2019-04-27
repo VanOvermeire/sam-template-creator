@@ -1,7 +1,7 @@
 import os
 import re
 
-from template_creator.util.constants import EVENT_TYPES, HTTP_METHODS
+from template_creator.reader.language_strategy_common import find_variables_in_line_of_code, find_api, find_events
 from template_creator.reader.config.python_iam_config import EXCEPTIONS
 
 
@@ -17,33 +17,21 @@ class PythonStrategy:
         try:
             lambda_event = handler_line[handler_line.index('(') + 1:handler_line.index('context)')]
 
-            for event in EVENT_TYPES.keys():
-                if event.lower() in lambda_event.lower():
-                    return [event]
+            return find_events(lambda_event)
         except ValueError:
             return None
 
     def find_api(self, handler_line):
-        method = []
-        path = ''
+        try:
+            handler_prefix = handler_line[handler_line.index('def') + 4:handler_line.index('handler(')]
+            split_prefix = list(map(lambda x: x.lower(), handler_prefix.split('_')))
 
-        handler_prefix = handler_line[handler_line.index('def') + 4:handler_line.index('handler(')]
-        split_prefix = list(map(lambda x: x.lower(), handler_prefix.split('_')))
-
-        for line in split_prefix:
-            if line in HTTP_METHODS:
-                method = [line]
-            elif len(line) > 0:
-                path = '{}/{}'.format(path, line)
-
-        if len(method) and len(path):
-            method.append(path)
-
-        return method
+            return find_api(split_prefix)
+        except ValueError:
+            return []
 
     # TODO selection too simple, might not work in more complex situations
     #  - for example, os.environ[BUCKET] where BUCKET is a variable name
-    #  - ' vs "
     #  similar safety improvements for other methods here
     def find_env_variables(self, lines):
         variables = set()
@@ -53,22 +41,10 @@ class PythonStrategy:
         second_regex_results = list(filter(second_regex.search, lines))
 
         for result in first_regex_results:
-            location_first_env_var = result.find('os.environ')
-
-            while location_first_env_var != -1:
-                result_start_from_loc = result[location_first_env_var:]
-                variable = result_start_from_loc[12: result_start_from_loc.index(']') - 1]
-                variables.add(variable)
-                location_first_env_var = result.find('os.environ', location_first_env_var + 1)
+            variables.update(find_variables_in_line_of_code(result, 'os.environ[', ']'))
 
         for result in second_regex_results:
-            location_first_env_var = result.find('os.environ.get')
-
-            while location_first_env_var != -1:
-                result_start_from_loc = result[location_first_env_var:]
-                variable = result_start_from_loc[16: result_start_from_loc.index(')') - 1]
-                variables.add(variable)
-                location_first_env_var = result.find('os.environ.get', location_first_env_var + 1)
+            variables.update(find_variables_in_line_of_code(result, 'os.environ.get(', ')'))
 
         return list(variables)
 

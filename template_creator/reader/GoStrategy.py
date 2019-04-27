@@ -1,11 +1,8 @@
-import os
 import re
 
-from template_creator.util.constants import EVENT_TYPES, HTTP_METHODS
-from template_creator.reader.config.python_iam_config import EXCEPTIONS
+from template_creator.reader.language_strategy_common import find_variables_in_line_of_code, find_api, find_events
 
 
-# potential code reuse (compare python strategy)
 class GoStrategy:
     def build_handler(self, directory, file, handler_line):
         return 'main'  # TODO check if this works
@@ -15,32 +12,16 @@ class GoStrategy:
             lambda_full_event = handler_line[handler_line.index('Context, ') + 9:handler_line.index(')')]
             lambda_event = lambda_full_event[0:lambda_full_event.index(' ')]
 
-            for event in EVENT_TYPES.keys():
-                if event.lower() in lambda_event.lower():
-                    return [event]
+            return find_events(lambda_event)
         except ValueError:
             return None
 
     def find_api(self, handler_line):
         try:
-            method = []
-            path = ''
-
             handler_prefix = handler_line[handler_line.index('func ') + 5:handler_line.index('Request')]
             split_prefix = re.split('(?=[A-Z])', handler_prefix)
 
-            for line in split_prefix:
-                lowecase_line = line.lower()
-
-                if lowecase_line in HTTP_METHODS:
-                    method = [lowecase_line]
-                elif len(lowecase_line) > 0:
-                    path = '{}/{}'.format(path, lowecase_line)
-
-            if len(method) and len(path):
-                method.append(path)
-
-            return method
+            return find_api(split_prefix)
         except ValueError:
             return []
 
@@ -50,13 +31,7 @@ class GoStrategy:
         first_regex_results = list(filter(first_regex.search, lines))
 
         for result in first_regex_results:
-            location_first_env_var = result.find('os.Getenv("')
-            # TODO move this while logic to helper (also see python strategy)
-            while location_first_env_var != -1:
-                result_start_from_loc = result[location_first_env_var:]
-                variable = result_start_from_loc[11: result_start_from_loc.index('")')]
-                variables.add(variable)
-                location_first_env_var = result.find('os.Getenv', location_first_env_var + 1)
+            variables.update(find_variables_in_line_of_code(result, 'os.Getenv(', ')'))
 
         return list(variables)
 
@@ -66,9 +41,7 @@ class GoStrategy:
         results = list(filter(regex.search, lines))
 
         for result in results:
-            print(result)
             client = result[result.rfind('/') + 1:result.rfind('"')]
-            print(client)
 
             # TODO check exceptions
             # if client in EXCEPTIONS:

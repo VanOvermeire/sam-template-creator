@@ -113,5 +113,3 @@ class TestGoStrategy(unittest.TestCase):
         result = self.strategy.find_role(lines)
 
         self.assertCountEqual(result, ['s3:*'])
-
-
