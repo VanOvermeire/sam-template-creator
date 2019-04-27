@@ -113,3 +113,13 @@ class TestGoStrategy(unittest.TestCase):
         result = self.strategy.find_role(lines)
 
         self.assertCountEqual(result, ['s3:*'])
+
+    def test_find_roles_from_exception_list(self):
+        lines = ['package main\n', '\n', 'import (\n', '\t"context"\n', '\t"fmt"\n', '\t"github.com/aws/aws-lambda-go/events"\n', '\t"github.com/aws/aws-lambda-go/lambda"\n',
+                 '\t"github.com/aws/aws-sdk-go/service/efs"\n', '\t"go-reservations/db"\n', '\t"os"\n', ')\n', '\n', 'var dbClient *db.Client\n', '\n', 'func init() {\n',
+                 'func HandleRequest(_ context.Context, event events.APIGatewayProxyRequest) (Response, error) {\n', '\tfmt.Println("Received ", event) // remove, temporary logging\n',
+                 '\treturn handleAdd(dbClient, event)\n', '}\n', '\n', 'func main() {\n', '\tlambda.Start(HandleRequest)\n', '}\n']
+
+        result = self.strategy.find_role(lines)
+
+        self.assertCountEqual(result, ['elasticfilesystem:*'])

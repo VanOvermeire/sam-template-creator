@@ -1,5 +1,6 @@
 import re
 
+from template_creator.reader.config.iam_config import GO_EXCEPTIONS
 from template_creator.reader.language_strategy_common import find_variables_in_line_of_code, find_api, find_events
 
 
@@ -43,9 +44,8 @@ class GoStrategy:
         for result in results:
             client = result[result.rfind('/') + 1:result.rfind('"')]
 
-            # TODO check exceptions
-            # if client in EXCEPTIONS:
-            #     client = EXCEPTIONS[client]
+            if client in GO_EXCEPTIONS:
+                client = GO_EXCEPTIONS[client]
 
             clients.add('{}:*'.format(client))
 

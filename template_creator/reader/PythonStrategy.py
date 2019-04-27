@@ -2,7 +2,7 @@ import os
 import re
 
 from template_creator.reader.language_strategy_common import find_variables_in_line_of_code, find_api, find_events
-from template_creator.reader.config.python_iam_config import EXCEPTIONS
+from template_creator.reader.config.iam_config import PYTHON_EXCEPTIONS
 
 
 class PythonStrategy:
@@ -56,8 +56,8 @@ class PythonStrategy:
         for result in results:
             client = result[result.index('boto3.client(\'') + 14: result.index('\')')]
 
-            if client in EXCEPTIONS:
-                client = EXCEPTIONS[client]
+            if client in PYTHON_EXCEPTIONS:
+                client = PYTHON_EXCEPTIONS[client]
 
             clients.add('{}:*'.format(client))
 
