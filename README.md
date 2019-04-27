@@ -21,7 +21,7 @@ Finally, for very complex use cases only original, hand-coded [SAM][1] or Cloudf
 - python 3 and pip
 - a project directory to scan 
 
-*Currently only Python projects are supported. Node, Go and Java are planned.*
+*Currently only Python projects are supported. Go is in progress, Node and Java are planned.*
 
 ## Usage
 
@@ -101,8 +101,8 @@ It requires a bucket as argument (for uploading the lambda zip) and [default AWS
 ### Planned improvements
 
 * Languages
-    * Node
     * Go (in progress)
+    * Node
     * Java
 * Robust error handling 
 * Ask questions. See you call dynamo, add to template? generate outputs? how many buckets for events? deploy template? use 'middleware' for this 
