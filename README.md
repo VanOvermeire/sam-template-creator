@@ -27,7 +27,7 @@ Finally, for very complex use cases only original, hand-coded [SAM][1] or Cloudf
 
 Install with `pip install sam-template-creator` or `pip3 install sam-template-creator`.
 
-You can now run the following command, with its one required argument: `sam-template-creator --location /absolute/path/to/project`
+You can now run the following command, with its one required argument: `sam-template-creator --location /path/to/project`
 
 Additional (optional) arguments are:
 - language: can be useful if you think the script will not be able to guess the language (it checks the number of files per language and takes the highest), 
@@ -69,6 +69,7 @@ For example, if s3 is the source, the name of the event should contain `s3`, lik
 
 ##### Go
 
+- the name of your executable should be `handler`
 - if you want to map a function to an api gateway method, the lambda handler should end with the word Request, with the path and method prepended to this word.
 For example, `func PostAddHelloRequest(_ context.Context, event events.APIGatewayProxyRequest) error` is mapped to a `POST` to `/add/hello`.
 - if the lambda is triggered by an event source, the name should reflect that. 
@@ -111,6 +112,5 @@ It requires a bucket as argument (for uploading the lambda zip) and [default AWS
 * Scan other files in the lambda folder, maybe follow imports/requires/..., to find more environment variables and needed permissions  
 * Robust error handling 
 * Ask questions. See you call dynamo, add to template? generate outputs? how many buckets for events? deploy template? use 'middleware' for this 
-* Relative location of project  
 * Config option: set memory/timeout on individual lambdas vs globally  
 * Option to specify which kind of folders in project contain lambdas  

@@ -6,7 +6,7 @@ from template_creator.reader.language_strategy_common import find_variables_in_l
 
 class GoStrategy:
     def build_handler(self, directory, file, handler_line):
-        return 'main'  # TODO check if this works for test project
+        return 'handler'
 
     def find_events(self, handler_line):
         try:

@@ -1,3 +1,5 @@
+import os
+
 from template_creator.util import template_checks
 from template_creator.reader import directory_scanner
 from template_creator.writer import yaml_writer
@@ -23,6 +25,7 @@ def set_defaults_if_needed(language, location, memory, timeout):
 
 
 def find_resources_and_create_yaml_template(location, language, timeout, memory):
+    location = os.path.abspath(location)
     template_checks.check_template_name(location, DEFAULT_TEMPLATE_NAME)
 
     language, memory, timeout = set_defaults_if_needed(language, location, memory, timeout)
