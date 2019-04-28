@@ -112,5 +112,5 @@ It requires a bucket as argument (for uploading the lambda zip) and [default AWS
 * Scan other files in the lambda folder, maybe follow imports/requires/..., to find more environment variables and needed permissions  
 * Robust error handling 
 * Ask questions. See you call dynamo, add to template? generate outputs? how many buckets for events? deploy template? use 'middleware' for this 
-* Config option: set memory/timeout on individual lambdas vs globally  
-* Option to specify which kind of folders in project contain lambdas  
+* Option to specify which kind of folders in project contain lambdas?  
+* Polyglot projects?

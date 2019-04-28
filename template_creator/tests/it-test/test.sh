@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+# TODO this still uses the old way - running with executable. Instead do a local pip install in a virtual env and use pip to create template
 # quite simple, can be expanded later on
 
 function checkStatus() {

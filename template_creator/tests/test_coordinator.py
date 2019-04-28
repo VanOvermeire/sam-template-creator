@@ -28,7 +28,13 @@ class TestCoordinator(unittest.TestCase):
         yaml_mock.return_value = None
         transformer_mock.return_value = {}
 
-        coordinator.find_resources_and_create_yaml_template('/some/location', None, None, None)
+        coordinator.find_resources_and_create_yaml_template('/some/location', None, None, None, False)
 
-        yaml_mock.assert_called_once_with({'language': 'python3.7', 'lambdas': {}, 'other_resources': {},
-                                           'location': '/some/location/template.yaml', 'memory': 512, 'timeout': 3})
+        yaml_mock.assert_called_once_with({'language': 'python3.7',
+                                           'lambdas': {},
+                                           'other_resources': {},
+                                           'location': '/some/location/template.yaml',
+                                           'memory': 512,
+                                           'timeout': 3,
+                                           'no-globals': False,
+                                           })

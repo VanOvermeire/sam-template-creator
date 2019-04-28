@@ -24,7 +24,7 @@ def set_defaults_if_needed(language, location, memory, timeout):
     return language, memory, timeout
 
 
-def find_resources_and_create_yaml_template(location, language, timeout, memory):
+def find_resources_and_create_yaml_template(location, language, timeout, memory, no_globals):
     location = os.path.abspath(location)
     template_checks.check_template_name(location, DEFAULT_TEMPLATE_NAME)
 
@@ -39,7 +39,8 @@ def find_resources_and_create_yaml_template(location, language, timeout, memory)
                        'other_resources': other_resources,
                        'location': template_location,
                        'memory': memory,
-                       'timeout': timeout
+                       'timeout': timeout,
+                       'no-globals': no_globals,
                        })
 
     print('Finished writing to {}. Check the template, there may be some things for you to fill in or edit.'.format(template_location))

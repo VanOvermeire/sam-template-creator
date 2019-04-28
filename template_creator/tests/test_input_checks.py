@@ -59,5 +59,3 @@ class TestInputChecks(unittest.TestCase):
         result = input_checks.config_checks('python3.7', 30, 6000)
 
         self.assertFalse(result)
-
-
