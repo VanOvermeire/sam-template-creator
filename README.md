@@ -49,7 +49,9 @@ You can then deploy the template to AWS, using
 
 #### Directory
 
-Every lambda should have its own directory, under the root of the project. Other files can be present in the same directory.
+Every lambda should have its own directory, under the root of the project. Other files can be present in the same directory. 
+
+If a single zip file is present in the same folder as the handler file, the tool assumes this zip contains your code and points the `CodeUri` to that zip.
 
 #### Temporary limitation
 
