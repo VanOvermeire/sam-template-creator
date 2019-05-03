@@ -44,6 +44,7 @@ def write_all_resources(config):
 
 def write(config):
     yaml = YAML()
+    yaml.Representer.ignore_aliases = lambda *args: True
 
     with open(config['location'], 'w') as yamlFile:
         complete_dict = {}
