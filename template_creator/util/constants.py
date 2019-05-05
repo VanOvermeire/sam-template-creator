@@ -11,8 +11,7 @@ LANGUAGES_WITH_SUFFIXES = {
 
 HTTP_METHODS = ['get', 'head', 'options', 'post', 'put', 'delete', 'any']
 
-# api is handled separately
-# schedule? cloudwatch event? alexa skill?
+# api is handled separately, cloudwatch logs and events are special
 EVENT_TYPES = {
     'S3': {
         'Type': 'S3',
@@ -55,6 +54,18 @@ EVENT_TYPES = {
             'Enabled': True
         }
     },
+    'IoTRule': {
+        'Type': 'IoTRule',
+        'Properties': {
+            'Sql': '"SELECT * FROM example"'
+        }
+    },
+    'Schedule': {
+        'Type': 'Schedule',
+        'Properties': {
+            'Schedule': 'rate(5 minutes) # OR cron(5 * * * ? *)'
+        }
+    },
     'CloudWatchLogs': {
         'Type': 'CloudWatchLogs',
         'Properties': {
@@ -62,10 +73,14 @@ EVENT_TYPES = {
             'FilterPattern': 'Error'
         }
     },
-    'IoTRule': {
-        'Type': 'IoTRule',
+    'CloudwatchEvent': {
+        'Type': 'CloudWatchEvent',
         'Properties': {
-            'Sql': '"SELECT * FROM example"'
+            'Pattern': {
+                'detail': {
+                    'key': 'value'
+                }
+            }
         }
     }
 }

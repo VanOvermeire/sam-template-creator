@@ -1,9 +1,7 @@
-# will only work for calls with strings, hence the + 1 and - 1 for getting the variable
-import re
-
 from template_creator.util.constants import HTTP_METHODS, EVENT_TYPES
 
 
+# will only work for calls with strings, hence the + 1 and - 1 for getting the variable
 def find_variables_in_line_of_code(result, prefix_of_get_env_var, end_of_get_env_var):
     variables = set()
     location_first_env_var = result.find(prefix_of_get_env_var)
@@ -37,6 +35,14 @@ def find_api(split_prefix):
 
 
 def find_events(lambda_event):
-    for event in EVENT_TYPES.keys():
-        if event.lower() in lambda_event.lower():
+    events = EVENT_TYPES.keys()
+    lambda_event_lower = lambda_event.lower()
+
+    if 'cloudwatch' in lambda_event_lower:
+        if 'logs' in lambda_event_lower:
+            return ['CloudWatchLogs']
+        return ['CloudwatchEvent']
+
+    for event in events:
+        if event.lower() in lambda_event_lower:
             return [event]
