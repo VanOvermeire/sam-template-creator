@@ -33,12 +33,12 @@ class PythonStrategy:
     # TODO selection too simple, might not work in more complex situations
     #  - for example, os.environ[BUCKET] where BUCKET is a variable name
     #  similar safety improvements for other methods here
-    def find_env_variables(self, lines):
+    def find_env_variables(self, all_lines):
         variables = set()
         first_regex = re.compile(r'.*os.environ\[.*')
         second_regex = re.compile(r'.*os.environ.get\(.*')
-        first_regex_results = list(filter(first_regex.search, lines))
-        second_regex_results = list(filter(second_regex.search, lines))
+        first_regex_results = list(filter(first_regex.search, all_lines))
+        second_regex_results = list(filter(second_regex.search, all_lines))
 
         for result in first_regex_results:
             variables.update(find_variables_in_line_of_code(result, 'os.environ[', ']'))
@@ -48,10 +48,10 @@ class PythonStrategy:
 
         return list(variables)
 
-    def find_role(self, lines):
+    def find_role(self, all_lines):
         clients = set()
         regex = re.compile(r'.*boto3.client.*')
-        results = list(filter(regex.search, lines))
+        results = list(filter(regex.search, all_lines))
 
         for result in results:
             client = result[result.index('boto3.client(\'') + 14: result.index('\')')]
@@ -64,13 +64,37 @@ class PythonStrategy:
         return list(clients)
 
     @staticmethod
-    def is_handler_file(lines):
+    def is_handler_file(handler_lines):
         regex = re.compile(r'\s*def\s.*handler.*\(.*event, context\)')
-        result = list(filter(regex.search, lines))
+        result = list(filter(regex.search, handler_lines))
 
         if result:
             return True, result[0]
         return False, None
+
+    # TODO tests
+    # could also check init file to make sure we are not retrieving a library
+    @staticmethod
+    def find_invoked_files(handler_lines):
+        results = dict()
+
+        from_regex = re.compile(r'from .* import')
+        import_regex = re.compile(r'import .*')
+
+        for line in handler_lines:
+            from_result = from_regex.search(line)
+            import_result = import_regex.search(line)
+
+            if from_result:
+                from_group = from_result.group(0)
+                from_split = from_group.replace('from ', '').replace(' import', '').split('.')
+                results[from_split[0]] = from_split[1]
+            elif import_result:
+                import_group = import_result.group(0)
+                import_split = import_group.replace('import ', '').split('.')
+                results[import_split[0]] = import_split[1]
+
+        return results
 
     def __repr__(self):
         return self.__class__.__name__

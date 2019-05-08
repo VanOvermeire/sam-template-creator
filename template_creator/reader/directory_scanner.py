@@ -37,6 +37,7 @@ def find_lambda_files_in_directory(location, language):
                 true, handler_line = language_strategy_builder.is_handler_file_for(language, lines)
 
                 if true:
+                    # follow imports/... and get more lines of code, to check for env vars etc.
                     zip_file = zip_in_dir(a_dir)
                     strategy = language_strategy_builder.build_strategy(language)
                     file_info = FileInfo(location, a_dir, file, handler_line, lines, strategy, zip_file)
