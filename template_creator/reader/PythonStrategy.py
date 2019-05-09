@@ -78,16 +78,22 @@ class PythonStrategy:
     def find_invoked_files(handler_lines):
         results = dict()
 
-        from_regex = re.compile(r'from .* import')
-        import_regex = re.compile(r'import .*')
+        from_regex_one = re.compile(r'from .*\..* import')
+        from_regex_two = re.compile(r'from \w* import \w*')
+        import_regex = re.compile(r'import .*\..*')
 
         for line in handler_lines:
-            from_result = from_regex.search(line)
+            from_result_one = from_regex_one.search(line)
+            from_result_two = from_regex_two.search(line)
             import_result = import_regex.search(line)
 
-            if from_result:
-                from_group = from_result.group(0)
+            if from_result_one:
+                from_group = from_result_one.group(0)
                 from_split = from_group.replace('from ', '').replace(' import', '').split('.')
+                results[from_split[0]] = from_split[1]
+            elif from_result_two:
+                from_group = from_result_two.group(0)
+                from_split = from_group.replace('from ', '').replace('import ', '').split(' ')
                 results[from_split[0]] = from_split[1]
             elif import_result:
                 import_group = import_result.group(0)

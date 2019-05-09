@@ -26,20 +26,38 @@ def guess_language(location):
     return language
 
 
-def find_lambda_files_in_directory(location, language):
-    dirs = list([x for x in Path(location).iterdir() if x.is_dir()])
-    lambdas = []
+# could be recursive, for now just direct links
+def find_invoked_files(dirs, handler_file_lines, strategy, language_suffix):
+    lines = []
+    dirs_with_files = strategy.find_invoked_files(handler_file_lines)
 
     for a_dir in dirs:
-        for file in list(a_dir.glob('*' + LANGUAGES_WITH_SUFFIXES[language])):
+        if a_dir.name in dirs_with_files.keys():
+            filename = dirs_with_files[a_dir.name]
+
+            for file in list(a_dir.glob('*{}'.format(language_suffix))):
+                if filename == file.name.replace(language_suffix, ''):
+                    with file.open() as opened_file:
+                        lines.extend(opened_file.readlines())
+    return lines
+
+
+def find_lambda_files_in_directory(location, language):
+    lambdas = []
+    dirs = list([x for x in Path(location).iterdir() if x.is_dir()])
+    language_suffix = LANGUAGES_WITH_SUFFIXES[language]
+
+    for a_dir in dirs:
+        for file in list(a_dir.glob('*{}'.format(language_suffix))):
             with file.open() as opened_file:
                 lines = opened_file.readlines()
                 true, handler_line = language_strategy_builder.is_handler_file_for(language, lines)
 
                 if true:
-                    # follow imports/... and get more lines of code, to check for env vars etc.
                     zip_file = zip_in_dir(a_dir)
                     strategy = language_strategy_builder.build_strategy(language)
-                    file_info = FileInfo(location, a_dir, file, handler_line, lines, strategy, zip_file)
+                    other_file_lines = find_invoked_files(dirs, lines, strategy, language_suffix)
+                    file_info = FileInfo(location, a_dir, file, handler_line, lines, strategy, other_file_lines, zip_file)
+
                     lambdas.append(file_info.build())
     return lambdas
