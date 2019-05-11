@@ -110,3 +110,15 @@ class TestPythonStrategy(unittest.TestCase):
         result = self.strategy.find_api('def put_add_hello_handler(s3event, context):')
 
         self.assertEqual(result, ['put', '/add/hello'])
+
+    def test_find_invoked_files(self):
+        handler_lines = ['import os\n', '\n', '# import commented.out\n', 'from util.util_functions import get_beautiful_page, publish_to_sns\n', 'import secondutil.moreutil\n',
+                         'from thirdutil import evenmoreutil\n', '\n', "BASE_URL = os.environ['BASE_URL']\n", "sns_client = boto3.client('sns')\n", 'def handler(schedule_event, context):\n',
+                         "    return {'result': 'done'}\n"]
+
+        results = self.strategy.find_invoked_files(handler_lines)
+
+        print(results)
+        self.assertEqual(results['util'], 'util_functions')
+        self.assertEqual(results['secondutil'], 'moreutil')
+        self.assertEqual(results['thirdutil'], 'evenmoreutil')

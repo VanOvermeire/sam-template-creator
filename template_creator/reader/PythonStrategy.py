@@ -72,17 +72,17 @@ class PythonStrategy:
             return True, result[0]
         return False, None
 
-    # TODO tests
     # could also check init file to make sure we are not retrieving a library
     @staticmethod
-    def find_invoked_files(handler_lines):
+    def find_invoked_files(handler_file_lines):
+        lines_without_comments = [x for x in handler_file_lines if not x.strip().startswith('#')]
         results = dict()
 
         from_regex_one = re.compile(r'from .*\..* import')
         from_regex_two = re.compile(r'from \w* import \w*')
         import_regex = re.compile(r'import .*\..*')
 
-        for line in handler_lines:
+        for line in lines_without_comments:
             from_result_one = from_regex_one.search(line)
             from_result_two = from_regex_two.search(line)
             import_result = import_regex.search(line)

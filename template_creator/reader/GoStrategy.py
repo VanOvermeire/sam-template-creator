@@ -58,13 +58,48 @@ class GoStrategy:
 
         if result:
             first_result = result[0]
-            function_name = first_result[first_result.index('lambda.Start(') + 13 : first_result.index(')')]
+            function_name = first_result[first_result.index('lambda.Start(') + 13: first_result.index(')')]
 
             return True, [line for line in lines if function_name in line][0]
 
         return False, None
 
-    # TODO find method
+    @staticmethod
+    def find_invoked_files(handler_file_lines):
+        lines_without_comments = [x for x in handler_file_lines if not x.strip().startswith('//')]
+        results = dict()
+        i = 0
+
+        while i < len(lines_without_comments):
+            line = lines_without_comments[i].strip()
+
+            if line.startswith('import "'):
+                import_statement = line.replace('import', '')
+                result = import_statement[import_statement.find('"'):import_statement.rfind('"')]
+                GoStrategy.__add_if_not_system_or_github(result, results)
+
+            elif line.startswith('import ('):
+                if '"' in line:
+                    import_statement = line.replace('import (', '')
+                    result = import_statement[import_statement.find('"'):import_statement.rfind('"')]
+                    GoStrategy.__add_if_not_system_or_github(result, results)
+
+                while ')' not in line:
+                    line = lines_without_comments[i].strip()
+                    result = line[line.find('"'):line.rfind('"')]
+                    GoStrategy.__add_if_not_system_or_github(result, results)
+
+                    i += 1
+
+            i += 1
+
+        return results
+
+    @staticmethod
+    def __add_if_not_system_or_github(result, results):
+        if '/' in result and 'github.com' not in result:
+            result = result[result.find('/') + 1:]
+            results[result] = '*'
 
     def __repr__(self):
         return self.__class__.__name__

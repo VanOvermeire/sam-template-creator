@@ -123,3 +123,14 @@ class TestGoStrategy(unittest.TestCase):
         result = self.strategy.find_role(lines)
 
         self.assertCountEqual(result, ['elasticfilesystem:*'])
+
+    def test_find_invoked_files(self):
+        handler_lines = ['package main\n', '\n', 'import (\n', '\t"fmt"\n', '\t"github.com/aws/aws-lambda-go/events"\n', '\t"myproject/mylib"\n', '\t"myproject/secondlib"\n',
+                         '\t// "myproject/commented"\n', ')\n', 'import "anotherthing"', 'import "myproject/thirdlibrary"' 'var dbClient *db.Client\n', '\n', 'func HandleRequest(_ context.Context, event events.APIGatewayProxyRequest) (Response, error) {\n',
+                         '\tfmt.Println("Received ", event)\n', '\treturn {}\n', '}\n', 'func main() {\n', '\tlambda.Start(HandleRequest)\n', '}\n']
+
+        results = self.strategy.find_invoked_files(handler_lines)
+
+        self.assertEqual(results['mylib'], '*')
+        self.assertEqual(results['secondlib'], '*')
+        self.assertEqual(results['thirdlibrary'], '*')
