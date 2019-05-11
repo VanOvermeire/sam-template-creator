@@ -86,8 +86,10 @@ class GoStrategy:
 
                 while ')' not in line:
                     line = lines_without_comments[i].strip()
-                    result = line[line.find('"'):line.rfind('"')]
-                    GoStrategy.__add_if_not_system_or_github(result, results)
+
+                    if '"' in line:
+                        result = line[line.find('"'):line.rfind('"')]
+                        GoStrategy.__add_if_not_system_or_github(result, results)
 
                     i += 1
 
