@@ -32,7 +32,7 @@ def find_resources_and_create_yaml_template(location, language, timeout, memory,
     template_location = find_full_path_for_yaml_template(location, DEFAULT_TEMPLATE_NAME)
 
     lambdas = directory_scanner.find_lambda_files_in_directory(location, language)
-    other_resources = transformer.add_to_resources(lambdas)
+    other_resources = transformer.create_additional_resources(lambdas)
 
     yaml_writer.write({'language': language,
                        'lambdas': lambdas,

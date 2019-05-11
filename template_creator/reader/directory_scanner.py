@@ -26,7 +26,7 @@ def guess_language(location):
     return language
 
 
-# could be recursive, for now just direct links
+# TODO could be recursive, for now just direct 'links' to other files
 def find_invoked_files(dirs, handler_file_lines, strategy, language_suffix):
     lines = []
     dirs_with_files = strategy.find_invoked_files(handler_file_lines)
