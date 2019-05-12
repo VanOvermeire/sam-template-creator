@@ -11,7 +11,7 @@ class TestFileInfo(unittest.TestCase):
                  '        "body": json.dumps({\n', '            "message": "hello world",\n', '        }),\n', '    }\n']
 
         strategy = PythonStrategy()
-        self.fileInfo = FileInfo('/some/location', '/some/location/dir_of_lambda', '/some/location/dir_of_lambda/file.py', 'def my_handler(s3event, context):', lines, strategy)
+        self.fileInfo = FileInfo('/some/location', '/some/location/dir_of_lambda', '/some/location/dir_of_lambda/file.py', 'def my_handler(s3event, context):', lines, strategy, [])
 
     def test_build_camel_case_name(self):
         result = self.fileInfo.build_camel_case_name('hello_world')
