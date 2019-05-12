@@ -36,7 +36,7 @@ def find_invoked_files(dirs, handler_file_lines, strategy, language_suffix):
             filename = dirs_with_files[a_dir.name]
 
             for file in list(a_dir.glob('*{}'.format(language_suffix))):
-                if filename == file.name.replace(language_suffix, ''):
+                if filename == '*' or filename == file.name.replace(language_suffix, ''):
                     with file.open() as opened_file:
                         lines.extend(opened_file.readlines())
     return lines
