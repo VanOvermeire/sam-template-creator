@@ -53,7 +53,7 @@ class TestPythonStrategy(unittest.TestCase):
         self.assertCountEqual(result, ['variable'])
 
     def test_find_role(self):
-        result = self.strategy.find_role(self.lines)
+        result = self.strategy.find_permissions(self.lines)
 
         self.assertEqual(result, ['dynamodb:*'])
 
@@ -62,7 +62,7 @@ class TestPythonStrategy(unittest.TestCase):
                       '# this is the lambda\n', 'def lambda_handler(s3event, context):\n', '    return {\n', '        "statusCode": 200,\n',
                       '        "body": json.dumps({\n', '            "message": "hello world",\n', '        }),\n', '    }\n']
 
-        result = self.strategy.find_role(self.lines)
+        result = self.strategy.find_permissions(self.lines)
 
         self.assertEqual(result, ['states:*'])
 
@@ -82,7 +82,7 @@ class TestPythonStrategy(unittest.TestCase):
         self.assertIsNone(result)
 
     def test_build_handler(self):
-        result = self.strategy.build_handler('/some/location/dir_of_lambda', '/some/location/dir_of_lambda/file.py', self.hander_line)
+        result = self.strategy.build_handler('/some/location/dir_of_lambda', '/some/location/dir_of_lambda/file.py', self.hander_line, None)
 
         self.assertEqual(result, 'file.my_handler')
 

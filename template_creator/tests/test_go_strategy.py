@@ -38,7 +38,7 @@ class TestGoStrategy(unittest.TestCase):
         self.assertFalse(is_handler)
 
     def test_build_handler(self):
-        result = self.strategy.build_handler('/some/location/dir_of_lambda', '/some/location/dir_of_lambda/file.py', self.hander_line)
+        result = self.strategy.build_handler('/some/location/dir_of_lambda', '/some/location/dir_of_lambda/file.py', self.hander_line, None)
 
         self.assertEqual(result, 'handler')
 
@@ -100,19 +100,22 @@ class TestGoStrategy(unittest.TestCase):
         self.assertCountEqual(result, ['TABLE_NAME', 'REGION'])
 
     def test_find_roles_no_roles(self):
-        result = self.strategy.find_role(self.lines)
+        result = self.strategy.find_permissions(self.lines)
 
         self.assertCountEqual(result, [])
 
     def test_find_roles(self):
         lines = ['package main\n', '\n', 'import (\n', '\t"context"\n', '\t"fmt"\n', '\t"github.com/aws/aws-lambda-go/events"\n', '\t"github.com/aws/aws-lambda-go/lambda"\n',
-                 '\t"github.com/aws/aws-sdk-go/service/s3"\n', '\t"go-reservations/db"\n', '\t"os"\n', ')\n', '\n', 'var dbClient *db.Client\n', '\n', 'func init() {\n',
+                 '\t"github.com/aws/aws-sdk-go/service/s3"\n', '"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"', '"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbiface"',
+                 '\t"go-reservations/db"\n', '\t"os"\n', ')\n', '\n', 'var dbClient *db.Client\n', '\n', 'func init() {\n',
                  'func HandleRequest(_ context.Context, event events.APIGatewayProxyRequest) (Response, error) {\n', '\tfmt.Println("Received ", event) // remove, temporary logging\n',
                  '\treturn handleAdd(dbClient, event)\n', '}\n', '\n', 'func main() {\n', '\tlambda.Start(HandleRequest)\n', '}\n']
 
-        result = self.strategy.find_role(lines)
+        result = self.strategy.find_permissions(lines)
 
-        self.assertCountEqual(result, ['s3:*'])
+        print(result)
+
+        self.assertCountEqual(result, ['s3:*', 'dynamodb:*'])
 
     def test_find_roles_from_exception_list(self):
         lines = ['package main\n', '\n', 'import (\n', '\t"context"\n', '\t"fmt"\n', '\t"github.com/aws/aws-lambda-go/events"\n', '\t"github.com/aws/aws-lambda-go/lambda"\n',
@@ -120,13 +123,14 @@ class TestGoStrategy(unittest.TestCase):
                  'func HandleRequest(_ context.Context, event events.APIGatewayProxyRequest) (Response, error) {\n', '\tfmt.Println("Received ", event) // remove, temporary logging\n',
                  '\treturn handleAdd(dbClient, event)\n', '}\n', '\n', 'func main() {\n', '\tlambda.Start(HandleRequest)\n', '}\n']
 
-        result = self.strategy.find_role(lines)
+        result = self.strategy.find_permissions(lines)
 
         self.assertCountEqual(result, ['elasticfilesystem:*'])
 
     def test_find_invoked_files(self):
         handler_lines = ['package main\n', '\n', 'import (\n', '\t"fmt"\n', '\t"github.com/aws/aws-lambda-go/events"\n', '\t"myproject/mylib"\n', '\t"myproject/secondlib"\n',
-                         '\t// "myproject/commented"\n', ')\n', 'import "anotherthing"', 'import "myproject/thirdlibrary"' 'var dbClient *db.Client\n', '\n', 'func HandleRequest(_ context.Context, event events.APIGatewayProxyRequest) (Response, error) {\n',
+                         '\t// "myproject/commented"\n', ')\n', 'import "anotherthing"', 'import "myproject/thirdlibrary"' 'var dbClient *db.Client\n', '\n',
+                         'func HandleRequest(_ context.Context, event events.APIGatewayProxyRequest) (Response, error) {\n',
                          '\tfmt.Println("Received ", event)\n', '\treturn {}\n', '}\n', 'func main() {\n', '\tlambda.Start(HandleRequest)\n', '}\n']
 
         results = self.strategy.find_invoked_files(handler_lines)

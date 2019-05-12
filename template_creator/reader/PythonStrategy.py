@@ -6,7 +6,7 @@ from template_creator.reader.config.iam_config import PYTHON_EXCEPTIONS
 
 
 class PythonStrategy:
-    def build_handler(self, directory, file, handler_line):
+    def build_handler(self, directory, file, handler_line, executable):
         file_name = os.path.relpath(file, directory)
         function_name = handler_line[handler_line.index('def') + 4:handler_line.index('(')]
         file_name = file_name[0:file_name.index('.')]
@@ -48,7 +48,7 @@ class PythonStrategy:
 
         return list(variables)
 
-    def find_role(self, all_lines):
+    def find_permissions(self, all_lines):
         clients = set()
         regex = re.compile(r'.*boto3.client.*')
         results = list(filter(regex.search, all_lines))

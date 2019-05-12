@@ -5,7 +5,9 @@ from template_creator.reader.language_strategy_common import find_variables_in_l
 
 
 class GoStrategy:
-    def build_handler(self, directory, file, handler_line):
+    def build_handler(self, directory, file, handler_line, executable):
+        if executable:
+            return executable
         return 'handler'
 
     def find_events(self, handler_line):
@@ -36,13 +38,16 @@ class GoStrategy:
 
         return list(variables)
 
-    def find_role(self, lines):
+    def find_permissions(self, lines):
         clients = set()
         regex = re.compile(r'.*github.com/aws/aws-sdk-go/service/.*')
         results = list(filter(regex.search, lines))
 
         for result in results:
-            client = result[result.rfind('/') + 1:result.rfind('"')]
+            client = result.replace('github.com/aws/aws-sdk-go/service/', '').replace('"', '').strip()
+
+            if '/' in client:
+                client = client[:client.find('/')]
 
             if client in GO_EXCEPTIONS:
                 client = GO_EXCEPTIONS[client]
