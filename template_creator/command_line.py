@@ -4,7 +4,7 @@ from template_creator.util import input_checks
 from template_creator import coordinator
 
 
-# TODO maybe remove memory and timeout option, just set defaults
+# TODO maybe remove memory and timeout option, just set defaults. And global as option, specific as default
 def main():
     parser = argparse.ArgumentParser(description='Create a SAM template for your serverless project')
     parser.add_argument('-l', '--location', type=str, dest='location', required=True, help='absolute location of your project')

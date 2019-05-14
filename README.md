@@ -23,11 +23,25 @@ Finally, for very complex use cases only original, hand-coded [SAM][1] or Cloudf
 
 *Currently only Python projects are supported. Go is in progress, Node and Java are planned.*
 
-## Usage
+## Usage Guide / How-to
 
-Install with `pip install sam-template-creator` or `pip3 install sam-template-creator`.
+Install the tool using pip. For example
 
-You can now run the following command, with its one required argument: `sam-template-creator --location /path/to/project`
+`pip install sam-template-creator` 
+
+or 
+
+`pip3 install sam-template-creator`.
+
+Now either go to the root directory of your project and type
+
+`sam-template-creator --location .`
+
+or with shorthand argument names
+
+`sam-template-creator -l .`
+
+The location argument is required. The tool will also work with absolute paths: `sam-template-creator --location /path/to/project`
 
 Additional (optional) arguments are:
 - language: can be useful if you think the script will not be able to guess the language (it checks the number of files per language and takes the highest), 
@@ -37,21 +51,23 @@ or if you want to get an older version of a runtime (the script will default to 
 
 The script will create a `template.yaml` file in the root of your project's directory. Check its contents! It might point out some things you have to fill in.
 
-You can then deploy the template to AWS, using 
+You should now be able to deploy to AWS using
 
-`aws cloudformation package --template-file template.yaml --s3-bucket YOUR-BUCKET-NAME --output-template-file outputSamTemplate.yaml --capabilities CAPABILITY_IAM`
-
-`aws cloudformation deploy --template-file outputSamTemplate.yaml --stack-name YOUR-STACK_NAME --capabilities CAPABILITY_IAM`
+```
+aws cloudformation package --template-file template.yaml --s3-bucket YOUR-BUCKET-NAME --output-template-file outputSamTemplate.yaml --capabilities CAPABILITY_IAM
+aws cloudformation deploy --template-file outputSamTemplate.yaml --stack-name YOUR-STACK_NAME --capabilities CAPABILITY_IAM
+```
 
 ### Notes on usage
 
-*SAM Template Creator requires your project to be organised in a certain way.*
+*SAM Template Creator requires your project to be organised in a certain way.* See generics (across languages) and specifics (per language) below.
 
 #### Directory
 
 Every lambda should have its own directory, under the root of the project. Other files can be present in the same directory. 
 
-If a single zip file is present in the same folder as the handler file, the tool assumes this zip contains your code and points the `CodeUri` to that zip.
+If a single executable (for most languages a zip, in fact) is present in the folder of the handler file (or a subfolder), 
+the tool assumes this zip contains your code. It will point the `CodeUri` of that lambda to the zip.
 
 #### Temporary limitation
 
@@ -71,7 +87,9 @@ For example, if s3 is the source, the name of the event should contain `s3`, lik
 
 ##### Go
 
-- the name of your executable should be `handler`
+- the name of your executable should be `handler`. However, if you have an executable in the same folder as your lambda, the tool will set the `Handler`
+of that lambda to the name of this executable. For example, if the folder contains a `main` file under `dist/main`, the `Handler` will become main, with
+the `CodeUri` becoming `dist/main`. 
 - if you want to map a function to an api gateway method, the lambda handler should end with the word Request, with the path and method prepended to this word.
 For example, `func PostAddHelloRequest(_ context.Context, event events.APIGatewayProxyRequest) error` is mapped to a `POST` to `/add/hello`.
 - if the lambda is triggered by an event source, the name should reflect that. 
@@ -108,10 +126,8 @@ It requires a bucket as argument (for uploading the lambda zip) and [default AWS
 ### Planned improvements
 
 * Languages
-    * Go (in progress)
     * Node
-    * Java
-* Scan other files in the lambda folder, maybe follow imports/requires/..., to find more environment variables and needed permissions  
+    * Java 
 * Robust error handling 
 * Ask questions. See you call dynamo, add to template? generate outputs? how many buckets for events? deploy template? use 'middleware' for this 
 * Option to specify which kind of folders in project contain lambdas?  
