@@ -19,7 +19,7 @@ class FileInfo:
 
     def build_uri(self, dir_name):
         if self.executable:
-            return '{}/{}'.format(dir_name, self.executable)
+            return os.path.relpath(self.executable, self.location)
         return '{}/'.format(dir_name)
 
     def build(self):

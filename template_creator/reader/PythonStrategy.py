@@ -102,5 +102,9 @@ class PythonStrategy:
 
         return results
 
+    @staticmethod
+    def get_executable_glob():
+        return '**/*.zip'
+
     def __repr__(self):
         return self.__class__.__name__

@@ -42,6 +42,11 @@ class TestGoStrategy(unittest.TestCase):
 
         self.assertEqual(result, 'handler')
 
+    def test_build_handler_for_executable(self):
+        result = self.strategy.build_handler('/some/location/dir_of_lambda', '/some/location/dir_of_lambda/file.py', self.hander_line, '/some/location/dir_of_lambda/main')
+
+        self.assertEqual(result, 'main')
+
     def test_find_events(self):
         result = self.strategy.find_events(self.hander_line)
 

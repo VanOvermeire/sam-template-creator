@@ -9,18 +9,11 @@ def get_number_of_files_for(language_suffix, file_names):
     return len(list(x for x in file_names if x.endswith(language_suffix)))
 
 
-# TODO what about nested executables? (for example under a dist folder)? should we check for those - and then also set the right codeuri
-def executables_in_dir(a_dir, language):
-    executable_name = '*.zip'
-
-    if 'go' in language:
-        executable_name = 'main'
-
-    executables = list(a_dir.glob(executable_name))
+def executables_in_dir(a_dir, strategy):
+    executables = list(a_dir.glob(strategy.get_executable_glob()))
 
     if len(executables) == 1:
-        executable = str(executables[0])
-        return executable.rsplit('/', 1)[1]
+        return str(executables[0])
     return None
 
 
@@ -60,8 +53,8 @@ def find_lambda_files_in_directory(location, language):
                 true, handler_line = language_strategy_builder.is_handler_file_for(language, lines)
 
                 if true:
-                    executable = executables_in_dir(a_dir, language)
                     strategy = language_strategy_builder.build_strategy(language)
+                    executable = executables_in_dir(a_dir, strategy)
                     other_file_lines = find_invoked_files(dirs, lines, strategy, language_suffix)
                     file_info = FileInfo(location, a_dir, file, handler_line, lines, strategy, other_file_lines, executable)
 

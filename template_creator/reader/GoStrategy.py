@@ -7,7 +7,7 @@ from template_creator.reader.language_strategy_common import find_variables_in_l
 class GoStrategy:
     def build_handler(self, directory, file, handler_line, executable):
         if executable:
-            return executable
+            return executable.rsplit('/', 1)[1]
         return 'handler'
 
     def find_events(self, handler_line):
@@ -107,6 +107,10 @@ class GoStrategy:
         if '/' in result and 'github.com' not in result:
             result = result[result.find('/') + 1:]
             results[result] = '*'
+
+    @staticmethod
+    def get_executable_glob():
+        return '**/main'
 
     def __repr__(self):
         return self.__class__.__name__

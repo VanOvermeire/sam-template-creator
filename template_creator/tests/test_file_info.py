@@ -26,3 +26,27 @@ class TestFileInfo(unittest.TestCase):
         self.assertEqual(result['uri'], 'dir_of_lambda/')
         self.assertEqual(result['variables'], ['variable'])
         self.assertEqual(result['permissions'], ['dynamodb:*'])
+
+    def test_build_uri_with_zip_executable(self):
+        lines = ['import json\n', 'import os\n', '\n', 'import requests\n', 'import boto3\n', '\n', "db = boto3.client('dynamodb')\n", "var = os.environ['variable']\n", '\n', '\n',
+                 '# this is the lambda\n', 'def lambda_handler(s3event, context):\n', '    return {\n', '        "statusCode": 200,\n',
+                 '        "body": json.dumps({\n', '            "message": "hello world",\n', '        }),\n', '    }\n']
+        strategy = PythonStrategy()
+        file_info = FileInfo('/some/location', '/some/location/dir_of_lambda', '/some/location/dir_of_lambda/file.py', 'def my_handler(s3event, context):', lines, strategy, [],
+                             '/some/location/dir_of_lambda/dist/handler.zip')
+
+        result = file_info.build()
+
+        self.assertEqual(result['uri'], 'dir_of_lambda/dist/handler.zip')
+
+    def test_build_uri_with_go_executable(self):
+        lines = ['import json\n', 'import os\n', '\n', 'import requests\n', 'import boto3\n', '\n', "db = boto3.client('dynamodb')\n", "var = os.environ['variable']\n", '\n', '\n',
+                 '# this is the lambda\n', 'def lambda_handler(s3event, context):\n', '    return {\n', '        "statusCode": 200,\n',
+                 '        "body": json.dumps({\n', '            "message": "hello world",\n', '        }),\n', '    }\n']
+        strategy = PythonStrategy()
+        file_info = FileInfo('/some/location', '/some/location/dir_of_lambda', '/some/location/dir_of_lambda/file.py', 'def my_handler(s3event, context):', lines, strategy, [],
+                             '/some/location/dir_of_lambda/main')
+
+        result = file_info.build()
+
+        self.assertEqual(result['uri'], 'dir_of_lambda/main')
