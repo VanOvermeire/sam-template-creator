@@ -4,23 +4,23 @@ from template_creator.writer import lambda_writer
 from template_creator.writer import header_writer
 
 
-def write_lambdas(lambdas, no_globals, language, memory, timeout):
+def write_lambdas(lambdas: dict, set_globals: bool, language: str) -> dict:
     resources = dict()
 
     for l in lambdas:
         new_lambda = lambda_writer.create_lambda_function(l['name'], l['handler'], l['uri'], l['variables'], l['events'], l['api'])
 
-        if no_globals:
-            new_lambda['Properties']['Timeout'] = timeout
+        if not set_globals:
             new_lambda['Properties']['Runtime'] = language
-            new_lambda['Properties']['MemorySize'] = memory
+            new_lambda['Properties']['Timeout'] = 3
+            new_lambda['Properties']['MemorySize'] = 512
 
         resources[l['name']] = new_lambda
 
     return resources
 
 
-def write_roles(lambdas):
+def write_roles(lambdas: dict) -> dict:
     resources = dict()
 
     for l in lambdas:
@@ -30,10 +30,10 @@ def write_roles(lambdas):
     return resources
 
 
-def write_all_resources(config):
+def write_all_resources(config: dict) -> dict:
     resources = dict()
 
-    resources.update(write_lambdas(config['lambdas'], config['no-globals'], config['language'], config['memory'], config['timeout']))
+    resources.update(write_lambdas(config['lambdas'], config['set-global'], config['language']))
     resources.update(write_roles(config['lambdas']))
     resources.update(config['other_resources'])
 
@@ -42,7 +42,7 @@ def write_all_resources(config):
     }
 
 
-def write(config):
+def write(config: dict) -> None:
     yaml = YAML()
     yaml.Representer.ignore_aliases = lambda *args: True
 

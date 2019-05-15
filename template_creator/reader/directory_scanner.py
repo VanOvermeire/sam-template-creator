@@ -1,11 +1,13 @@
 from pathlib import Path
 
+from typing import List
+
 from template_creator.util.constants import LANGUAGES_WITH_SUFFIXES
 from template_creator.reader import language_strategy_builder
 from template_creator.reader.FileInfo import FileInfo
 
 
-def get_number_of_files_for(language_suffix, file_names):
+def get_number_of_files_for(language_suffix: str, file_names: List[str]):
     return len(list(x for x in file_names if x.endswith(language_suffix)))
 
 
@@ -17,7 +19,7 @@ def executables_in_dir(a_dir, strategy):
     return None
 
 
-def guess_language(location):
+def guess_language(location: str) -> str:
     all_files_with_a_suffix = list(str(x) for x in Path(location).rglob("*.*"))
     languages_with_counts = {k: get_number_of_files_for(v, all_files_with_a_suffix) for k, v in LANGUAGES_WITH_SUFFIXES.items()}
     language = max(languages_with_counts, key=languages_with_counts.get)
@@ -25,8 +27,8 @@ def guess_language(location):
     return language
 
 
-# TODO could be recursive, for now just direct 'links' to other files
-def find_invoked_files(dirs, handler_file_lines, strategy, language_suffix):
+# could be recursive, for now just direct 'links' to other files (less complex)
+def find_invoked_files(dirs, handler_file_lines, strategy, language_suffix) -> list:
     lines = []
     dirs_with_files = strategy.find_invoked_files(handler_file_lines)
 
@@ -41,7 +43,7 @@ def find_invoked_files(dirs, handler_file_lines, strategy, language_suffix):
     return lines
 
 
-def find_lambda_files_in_directory(location, language):
+def find_lambda_files_in_directory(location: str, language: str) -> List[dict]:
     lambdas = []
     dirs = list([x for x in Path(location).iterdir() if x.is_dir()])
     language_suffix = LANGUAGES_WITH_SUFFIXES[language]

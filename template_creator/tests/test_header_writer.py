@@ -12,7 +12,7 @@ class TestHeaderWriter(unittest.TestCase):
         self.assertEqual(result['Transform'], 'AWS::Serverless-2016-10-31')
 
     def test_write_global(self):
-        result = header_writer.write_global_section('python3.7', 512, 3)
+        result = header_writer.write_global_section('python3.7')
 
         globals_function = result['Globals']['Function']
 
@@ -20,12 +20,10 @@ class TestHeaderWriter(unittest.TestCase):
         self.assertEqual(globals_function['Runtime'], 'python3.7')
         self.assertEqual(globals_function['MemorySize'], 512)
 
-    def test_write_headers_no_globals_false(self):
+    def test_write_headers_set_global_true(self):
         config = {
             'language': 'python3.7',
-            'memory': 128,
-            'timeout': 5,
-            'no-globals': False,
+            'set-global': True,
         }
 
         result = header_writer.write_headers(config)
@@ -35,16 +33,14 @@ class TestHeaderWriter(unittest.TestCase):
 
         globals_function = result['Globals']['Function']
 
-        self.assertEqual(globals_function['Timeout'], 5)
+        self.assertEqual(globals_function['Timeout'], 3)
         self.assertEqual(globals_function['Runtime'], 'python3.7')
-        self.assertEqual(globals_function['MemorySize'], 128)
+        self.assertEqual(globals_function['MemorySize'], 512)
 
-    def test_write_headers_no_globals_true(self):
+    def test_write_headers_set_global_false(self):
         config = {
             'language': 'python3.7',
-            'memory': 128,
-            'timeout': 5,
-            'no-globals': True,
+            'set-global': False,
         }
 
         result = header_writer.write_headers(config)

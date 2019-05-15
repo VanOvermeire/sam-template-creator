@@ -5,13 +5,13 @@ def write_header():
     }
 
 
-def write_global_section(language, memory, timeout):
+def write_global_section(language):
     return {
         'Globals': {
             'Function': {
-                'Timeout': timeout,
                 'Runtime': language,
-                'MemorySize': memory
+                'Timeout': 3,
+                'MemorySize': 512
             }
         }
     }
@@ -20,7 +20,7 @@ def write_global_section(language, memory, timeout):
 def write_headers(config):
     headers = write_header()
 
-    if not config['no-globals']:
-        headers.update(write_global_section(config['language'], config['memory'], config['timeout']))
+    if config['set-global']:
+        headers.update(write_global_section(config['language']))
 
     return headers

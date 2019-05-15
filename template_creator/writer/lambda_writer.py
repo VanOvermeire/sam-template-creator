@@ -1,7 +1,9 @@
+from typing import List
+
 from template_creator.util.constants import EVENT_TYPES
 
 
-def create_lambda_function(name, handler, uri, variables, events, api):
+def create_lambda_function(name: str, handler: str, uri: str, variables, events, api) -> dict:
     generic = {
         'Type': 'AWS::Serverless::Function',
         'Properties': {
@@ -23,15 +25,15 @@ def create_lambda_function(name, handler, uri, variables, events, api):
     return generic
 
 
-def create_event_name(lambda_name, event):
+def create_event_name(lambda_name: str, event: str) -> str:
     return '{}{}Event'.format(lambda_name, event)
 
 
-def create_role_name(lambda_name):
+def create_role_name(lambda_name: str) -> str:
     return '{}Role'.format(lambda_name)
 
 
-def add_events(generic, events, name):
+def add_events(generic: dict, events: List[str], name: str) -> None:
     events_with_value = dict()
     if events:
         for event in events:
@@ -40,7 +42,7 @@ def add_events(generic, events, name):
         generic['Properties'].update({'Events': events_with_value})
 
 
-def add_variables(generic, variables):
+def add_variables(generic: dict, variables: List[str]) -> None:
     variables_with_value = dict()
 
     if variables:
@@ -54,7 +56,7 @@ def add_variables(generic, variables):
         })
 
 
-def add_api(generic, api):
+def add_api(generic: dict, api: List[str]) -> None:
     if api:
         method = api[0]
         path = api[1]
@@ -72,7 +74,7 @@ def add_api(generic, api):
         })
 
 
-def create_role(name, permissions):
+def create_role(name: str, permissions: List[str]) -> (str, dict):
     role_name = create_role_name(name)
     actions = ['logs:CreateLogStream', 'logs:CreateLogGroup', 'logs:PutLogEvents']
     actions.extend(permissions)

@@ -1,5 +1,4 @@
-import re
-from pathlib import Path
+from typing import List
 
 from template_creator.reader.PythonStrategy import PythonStrategy
 from template_creator.reader.GoStrategy import GoStrategy
@@ -13,14 +12,14 @@ STRATEGIES = {
 }
 
 
-def build_strategy(language):
+def build_strategy(language: str):
     for strategy in STRATEGIES.keys():
         if language in strategy:
             return STRATEGIES[strategy]()
     raise LanguageError('Could not find strategy for {}'.format(language))
 
 
-def is_handler_file_for(language, lines):
+def is_handler_file_for(language: str, lines: List[str]):
     for strategy in STRATEGIES.keys():
         if language in strategy:
             return STRATEGIES[strategy].is_handler_file(lines)

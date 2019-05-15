@@ -18,7 +18,8 @@ Finally, for very complex use cases only original, hand-coded [SAM][1] or Cloudf
 
 ## Requirements
 
-- python 3 and pip
+- python 3.5 or higher
+- pip
 - a project directory to scan 
 
 *Currently only Python projects are supported. Go is in progress, Node and Java are planned.*
@@ -46,8 +47,7 @@ The location argument is required. The tool will also work with absolute paths: 
 Additional (optional) arguments are:
 - language: can be useful if you think the script will not be able to guess the language (it checks the number of files per language and takes the highest), 
 or if you want to get an older version of a runtime (the script will default to the latest version of, for example, python)
-- memory: memory you want to set for your lambdas. Defaults to 512
-- timeout: the timeout for your lambdas. Defaults to 3
+- globals: if used, the memory and timeout of the lambdas will be set globally, instead of per function
 
 The script will create a `template.yaml` file in the root of your project's directory. Check its contents! It might point out some things you have to fill in.
 
