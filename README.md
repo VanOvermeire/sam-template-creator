@@ -54,13 +54,15 @@ The script will create a `template.yaml` file in the root of your project's dire
 You should now be able to deploy to AWS using
 
 ```
-aws cloudformation package --template-file template.yaml --s3-bucket YOUR-BUCKET-NAME --output-template-file outputSamTemplate.yaml --capabilities CAPABILITY_IAM
+aws cloudformation package --template-file template.yaml --s3-bucket YOUR-BUCKET-NAME --output-template-file outputSamTemplate.yaml
 aws cloudformation deploy --template-file outputSamTemplate.yaml --stack-name YOUR-STACK_NAME --capabilities CAPABILITY_IAM
 ```
 
 ### Notes on usage
 
-*SAM Template Creator requires your project to be organised in a certain way.* See generics (across languages) and specifics (per language) below.
+*SAM Template Creator requires your project to be organised in a certain way.*
+
+See generics (across languages) and specifics (per language) below.
 
 #### Directory
 
@@ -88,8 +90,8 @@ For example, if s3 is the source, the name of the event should contain `s3`, lik
 ##### Go
 
 - the name of your executable should be `handler`. However, if you have an executable in the same folder as your lambda, the tool will set the `Handler`
-of that lambda to the name of this executable. For example, if the folder contains a `main` file under `dist/main`, the `Handler` will become main, with
-the `CodeUri` becoming `dist/main`. 
+of that lambda to the name of this executable. For example, if your folder `mylambda` contains a `main` file under `dist/main`, the `Handler` will become main, with
+the `CodeUri` equal to `/mylambda/dist/main`. 
 - if you want to map a function to an api gateway method, the lambda handler should end with the word Request, with the path and method prepended to this word.
 For example, `func PostAddHelloRequest(_ context.Context, event events.APIGatewayProxyRequest) error` is mapped to a `POST` to `/add/hello`.
 - if the lambda is triggered by an event source, the name should reflect that. 
