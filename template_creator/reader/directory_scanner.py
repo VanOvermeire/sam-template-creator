@@ -3,7 +3,7 @@ from pathlib import Path
 from typing import List
 
 from template_creator.util.constants import LANGUAGES_WITH_SUFFIXES
-from template_creator.reader import language_strategy_builder
+from template_creator.reader.strategies import language_strategy_builder
 from template_creator.reader.FileInfo import FileInfo
 
 
@@ -46,6 +46,7 @@ def find_invoked_files(dirs, handler_file_lines, strategy, language_suffix) -> l
 def find_lambda_files_in_directory(location: str, language: str) -> List[dict]:
     lambdas = []
     dirs = list([x for x in Path(location).iterdir() if x.is_dir()])
+
     language_suffix = LANGUAGES_WITH_SUFFIXES[language]
 
     for a_dir in dirs:

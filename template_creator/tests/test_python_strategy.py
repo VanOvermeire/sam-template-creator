@@ -1,6 +1,6 @@
 import unittest
 
-from template_creator.reader.PythonStrategy import PythonStrategy
+from template_creator.reader.strategies.PythonStrategy import PythonStrategy
 
 
 class TestPythonStrategy(unittest.TestCase):
@@ -118,7 +118,6 @@ class TestPythonStrategy(unittest.TestCase):
 
         results = self.strategy.find_invoked_files(handler_lines)
 
-        print(results)
         self.assertEqual(results['util'], 'util_functions')
         self.assertEqual(results['secondutil'], 'moreutil')
         self.assertEqual(results['thirdutil'], 'evenmoreutil')

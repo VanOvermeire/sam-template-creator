@@ -1,7 +1,7 @@
 import re
 
 from template_creator.reader.config.iam_config import GO_EXCEPTIONS
-from template_creator.reader.language_strategy_common import find_variables_in_line_of_code, find_api, find_events
+from template_creator.reader.strategies.language_strategy_common import find_variables_in_line_of_code, find_api, find_events
 
 
 class GoStrategy:

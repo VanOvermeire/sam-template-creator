@@ -1,6 +1,6 @@
 import unittest
 
-from template_creator.reader.GoStrategy import GoStrategy
+from template_creator.reader.strategies.GoStrategy import GoStrategy
 
 
 class TestGoStrategy(unittest.TestCase):
@@ -117,8 +117,6 @@ class TestGoStrategy(unittest.TestCase):
                  '\treturn handleAdd(dbClient, event)\n', '}\n', '\n', 'func main() {\n', '\tlambda.Start(HandleRequest)\n', '}\n']
 
         result = self.strategy.find_permissions(lines)
-
-        print(result)
 
         self.assertCountEqual(result, ['s3:*', 'dynamodb:*'])
 

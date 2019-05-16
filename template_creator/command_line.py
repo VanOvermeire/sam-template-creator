@@ -12,7 +12,7 @@ def main():
 
     args = parser.parse_args()
 
-    if not input_checks.config_checks(args.language):
+    if not input_checks.config_checks(args.location, args.language):
         exit(1)
 
     coordinator.find_resources_and_create_yaml_template(args.location, args.language, args.set_global)

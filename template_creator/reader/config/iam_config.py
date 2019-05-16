@@ -1,3 +1,5 @@
+# sometimes the name used by the sdk does not match that required for IAM. These dictionaries map those exceptions.
+
 PYTHON_EXCEPTIONS = {
     'alexaforbusiness': 'a4b',
     'apigateway': 'execute-api',

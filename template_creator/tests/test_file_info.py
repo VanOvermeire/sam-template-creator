@@ -1,7 +1,7 @@
 import unittest
 
 from template_creator.reader.FileInfo import FileInfo
-from template_creator.reader.PythonStrategy import PythonStrategy
+from template_creator.reader.strategies.PythonStrategy import PythonStrategy
 
 
 class TestFileInfo(unittest.TestCase):

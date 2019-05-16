@@ -1,6 +1,6 @@
 import unittest
 
-from template_creator.reader import language_strategy_common
+from template_creator.reader.strategies import language_strategy_common
 
 
 class TestCommonStrategy(unittest.TestCase):

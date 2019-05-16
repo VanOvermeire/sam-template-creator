@@ -1,8 +1,8 @@
 import unittest
 
-from template_creator.reader import language_strategy_builder
-from template_creator.reader.PythonStrategy import PythonStrategy
-from template_creator.reader.GoStrategy import GoStrategy
+from template_creator.reader.strategies import language_strategy_builder
+from template_creator.reader.strategies.PythonStrategy import PythonStrategy
+from template_creator.reader.strategies.GoStrategy import GoStrategy
 from template_creator.util.template_errors import LanguageError
 
 

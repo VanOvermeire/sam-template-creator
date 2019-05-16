@@ -11,7 +11,8 @@ LANGUAGES_WITH_SUFFIXES = {
 
 HTTP_METHODS = ['get', 'head', 'options', 'post', 'put', 'delete', 'any']
 
-# api is handled separately, cloudwatch logs and events are special
+# list of our event types
+# api is handled separately, logic for cloudwatch logs and events is a bit special
 EVENT_TYPES = {
     'S3': {
         'Type': 'S3',

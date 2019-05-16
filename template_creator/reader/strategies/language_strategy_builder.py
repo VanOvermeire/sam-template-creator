@@ -1,7 +1,7 @@
 from typing import List
 
-from template_creator.reader.PythonStrategy import PythonStrategy
-from template_creator.reader.GoStrategy import GoStrategy
+from template_creator.reader.strategies.PythonStrategy import PythonStrategy
+from template_creator.reader.strategies.GoStrategy import GoStrategy
 from template_creator.util.template_errors import LanguageError
 
 STRATEGIES = {

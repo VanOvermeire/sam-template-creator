@@ -3,6 +3,7 @@ def create_additional_resources(lambdas):
 
     for l in lambdas:
         if l['events'] and 'S3' in l['events']:
+            # TODO what if there are multiple event buckets?
             add_required_s3_bucket(resources)
             break
 
