@@ -24,14 +24,30 @@ class TestCoordinator(unittest.TestCase):
         guess_language_mock.return_value = 'python3.7'
         guess_language_mock.find_directory('/some/location', 'python3.7').return_value = {}
         checks_mock.return_value = None
-        find_dir_mock.return_value = {}
+        find_dir_mock.return_value = [{
+            'name': 'lambda-name',
+            'handler': 'a handler',
+            'uri': 'a uri',
+            'variables': [],
+            'events': [],
+            'permissions': [],
+            'api': []
+        }]
         yaml_mock.return_value = None
         transformer_mock.return_value = {}
 
         coordinator.find_resources_and_create_yaml_template('/some/location', None, False)
 
         yaml_mock.assert_called_once_with({'language': 'python3.7',
-                                           'lambdas': {},
+                                           'lambdas': [{
+                                               'name': 'lambda-name',
+                                               'handler': 'a handler',
+                                               'uri': 'a uri',
+                                               'variables': [],
+                                               'events': [],
+                                               'permissions': [],
+                                               'api': []
+                                           }],
                                            'other_resources': {},
                                            'location': '/some/location/template.yaml',
                                            'set-global': False,

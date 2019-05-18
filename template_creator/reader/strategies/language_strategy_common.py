@@ -1,3 +1,5 @@
+import logging
+
 from template_creator.util.constants import HTTP_METHODS, EVENT_TYPES
 
 
@@ -45,4 +47,5 @@ def find_events(lambda_event):
 
     for event in events:
         if event.lower() in lambda_event_lower:
+            logging.debug('Found event {}'.format(event))
             return [event]

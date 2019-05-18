@@ -1,4 +1,5 @@
 import os
+import logging
 
 from template_creator.util import template_checks
 from template_creator.reader import directory_scanner
@@ -17,7 +18,7 @@ def find_full_path_for_yaml_template(location: str, template_name: str) -> str:
 def set_default_if_needed_for(language: str, location: str) -> str:
     if language is None:
         language = directory_scanner.guess_language(location)
-        print('Language argument was not set. Found {}'.format(language))
+        logging.info('Language argument was not set. Found {}'.format(language))
     return language
 
 
@@ -31,7 +32,7 @@ def find_resources_and_create_yaml_template(location: str, language: str, set_gl
     lambdas = directory_scanner.find_lambda_files_in_directory(location, language)
 
     if not lambdas:
-        print('No lambdas found in {}'.format(location))
+        logging.error('No lambdas found in {}'.format(location))
     else:
         other_resources = transformer.create_additional_resources(lambdas)
 
@@ -42,4 +43,4 @@ def find_resources_and_create_yaml_template(location: str, language: str, set_gl
                            'set-global': set_global,
                            })
 
-        print('Finished writing to {}. Check the template, there may be some things for you to fill in or edit.'.format(template_location))
+        logging.info('Finished writing to {}. Check the template, there may be some things for you to fill in or edit.'.format(template_location))

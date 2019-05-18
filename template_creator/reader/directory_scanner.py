@@ -1,3 +1,4 @@
+import logging
 from pathlib import Path
 
 from typing import List
@@ -15,6 +16,7 @@ def executables_in_dir(a_dir, strategy):
     executables = list(a_dir.glob(strategy.get_executable_glob()))
 
     if len(executables) == 1:
+        logging.debug('Found an executable in dir {}'.format(a_dir.name))
         return str(executables[0])
     return None
 
@@ -38,6 +40,7 @@ def find_invoked_files(dirs, handler_file_lines, strategy, language_suffix) -> l
 
             for file in list(a_dir.glob('*{}'.format(language_suffix))):
                 if filename == '*' or filename == file.name.replace(language_suffix, ''):
+                    logging.debug('Found file that was called by our handler file: {}'.format(file.name))
                     with file.open() as opened_file:
                         lines.extend(opened_file.readlines())
     return lines
@@ -56,10 +59,11 @@ def find_lambda_files_in_directory(location: str, language: str) -> List[dict]:
                 true, handler_line = language_strategy_builder.is_handler_file_for(language, lines)
 
                 if true:
+                    logging.debug('Found handler file {} in dir {}'.format(file.name, a_dir.name))
                     strategy = language_strategy_builder.build_strategy(language)
                     executable = executables_in_dir(a_dir, strategy)
                     other_file_lines = find_invoked_files(dirs, lines, strategy, language_suffix)
                     file_info = FileInfo(location, a_dir, file, handler_line, lines, strategy, other_file_lines, executable)
-
+                    logging.debug('Building file info {} and adding to array'.format(file_info))
                     lambdas.append(file_info.build())
     return lambdas

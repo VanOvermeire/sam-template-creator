@@ -1,3 +1,4 @@
+import logging
 import os
 from time import time
 
@@ -11,5 +12,5 @@ def build_backup_name(template_name: str) -> str:
 def check_template_name(location: str, template_name: str) -> None:
     if template_name in os.listdir(location):
         backup_name = build_backup_name(template_name)
-        print('{} is already in use, changing that file to {}'.format(template_name, backup_name))
+        logging.info('{} is already in use, changing that file to {}'.format(template_name, backup_name))
         os.rename('{}/{}'.format(location, template_name), '{}/{}'.format(location, backup_name))
