@@ -30,6 +30,7 @@ def guess_language(location: str) -> str:
 
 
 # could be recursive, for now just direct 'links' to other files (less complex)
+# TODO should go deeper than just dirs under the root
 def find_invoked_files(dirs, handler_file_lines, strategy, language_suffix) -> list:
     lines = []
     dirs_with_files = strategy.find_invoked_files(handler_file_lines)
@@ -46,6 +47,8 @@ def find_invoked_files(dirs, handler_file_lines, strategy, language_suffix) -> l
     return lines
 
 
+# TODO might be better to explore deeper dirs (not just those under root), especially for Java (and Node)...
+# TODO and do we need to limit lambdas to their own dir? Might be advised though
 def find_lambda_files_in_directory(location: str, language: str) -> List[dict]:
     lambdas = []
     dirs = list([x for x in Path(location).iterdir() if x.is_dir()])

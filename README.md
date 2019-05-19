@@ -130,7 +130,7 @@ It requires a bucket as argument (for uploading the lambda zip) and [default AWS
 * Languages
     * Node
     * Java 
+* More flexibility in location of lambdas: searching more folders, or ability to specify folder structure  
 * Robust error handling 
 * Ask questions. See you call dynamo, add to template? generate outputs? how many buckets for events? deploy template? use 'middleware' for this 
-* Option to specify which kind of folders in project contain lambdas? or what kind of structure?  
 * Polyglot projects?
