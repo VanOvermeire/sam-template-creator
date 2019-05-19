@@ -53,7 +53,9 @@ def find_lambda_files_in_directory(location: str, language: str) -> List[dict]:
     language_suffix = LANGUAGES_WITH_SUFFIXES[language]
 
     for a_dir in dirs:
+        logging.debug('Checking dir {}'.format(a_dir.name))
         for file in list(a_dir.glob('*{}'.format(language_suffix))):
+            logging.debug('Checking file {}'.format(file.name))
             with file.open() as opened_file:
                 lines = opened_file.readlines()
                 true, handler_line = language_strategy_builder.is_handler_file_for(language, lines)
