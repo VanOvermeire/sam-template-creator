@@ -12,11 +12,6 @@ class FileInfo:
         self.other_file_lines = other_file_lines
         self.executable = executable
 
-    def build_camel_case_name(self, dir_name):
-        components = dir_name.split('_')
-
-        return ''.join(x.title() for x in components)
-
     def build_uri(self, dir_name):
         if self.executable:
             return os.path.relpath(self.executable, self.location)
@@ -24,7 +19,8 @@ class FileInfo:
 
     def build(self):
         dir_name = os.path.relpath(self.directory, self.location)
-        name = self.build_camel_case_name(dir_name)
+        # TODO camel case not suited for dots (java) or camelcase dirs
+        name = self.strategy.build_camel_case_name(dir_name, self.file)
         uri = self.build_uri(dir_name)
         handler = self.strategy.build_handler(self.directory, self.file, self.handler_line, self.executable)
         events = self.strategy.find_events(self.handler_line)

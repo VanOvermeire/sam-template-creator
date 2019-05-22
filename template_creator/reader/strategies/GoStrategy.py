@@ -5,6 +5,16 @@ from template_creator.reader.strategies.language_strategy_common import find_var
 
 
 class GoStrategy:
+    def build_camel_case_name(self, dir_name, file):
+        if '/' in dir_name:
+            dir_name = dir_name[dir_name.rfind('/') + 1:]
+        elif '.' == dir_name:
+            dir_name = file[file.rfind('/') + 1:file.find('.go')]
+
+        components = dir_name.split('_')
+
+        return ''.join(x.title() for x in components)
+
     def build_handler(self, directory, file, handler_line, executable):
         if executable:
             return executable.rsplit('/', 1)[1]

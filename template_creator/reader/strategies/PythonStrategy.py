@@ -6,6 +6,16 @@ from template_creator.reader.config.iam_config import PYTHON_EXCEPTIONS
 
 
 class PythonStrategy:
+    def build_camel_case_name(self, dir_name, file):
+        if '/' in dir_name:
+            dir_name = dir_name[dir_name.rfind('/') + 1:]
+        elif '.' == dir_name:
+            dir_name = file[file.rfind('/') + 1:file.find('.py')]
+
+        components = dir_name.split('_')
+
+        return ''.join(x.title() for x in components)
+
     def build_handler(self, directory, file, handler_line, executable):
         file_name = os.path.relpath(file, directory)
         function_name = handler_line[handler_line.index('def') + 4:handler_line.index('(')]
