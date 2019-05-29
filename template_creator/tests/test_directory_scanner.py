@@ -1,6 +1,9 @@
+from pathlib import Path
 from pyfakefs.fake_filesystem_unittest import TestCase
 
 from template_creator.reader import directory_scanner
+from template_creator.reader.strategies.GoStrategy import GoStrategy
+from template_creator.reader.strategies.PythonStrategy import PythonStrategy
 
 
 class TestDirectoryScanner(TestCase):
@@ -40,3 +43,101 @@ class TestDirectoryScanner(TestCase):
         result = directory_scanner.guess_language('/root')
 
         self.assertEqual(result, 'go1.x')
+
+    def test_executables_in_dir_should_find_executable_for_go(self):
+        self.fs.create_dir('/root')
+        self.fs.create_dir('/root/subdir_one')
+        self.fs.create_file('/root/subdir_one/first_python.py')
+        self.fs.create_file('/root/subdir_one/second_python.py')
+        self.fs.create_dir('/root/subdir_two')
+        self.fs.create_file('/root/subdir_two/first_go.go')
+        self.fs.create_file('/root/subdir_two/second_go.go')
+        self.fs.create_file('/root/subdir_two/main')
+        self.fs.create_dir('/root/third_go.go')
+        self.fs.create_file('/root/atextfile.txt')
+
+        result = directory_scanner.executables_in_dir(Path('/root/subdir_two'), GoStrategy())
+
+        self.assertEqual(result, '/root/subdir_two/main')
+
+    def test_executables_in_dir_should_find_nested_executable_for_go(self):
+        self.fs.create_dir('/root')
+        self.fs.create_dir('/root/subdir_one')
+        self.fs.create_file('/root/subdir_one/first_python.py')
+        self.fs.create_file('/root/subdir_one/second_python.py')
+        self.fs.create_dir('/root/subdir_two')
+        self.fs.create_file('/root/subdir_two/first_go.go')
+        self.fs.create_file('/root/subdir_two/second_go.go')
+        self.fs.create_file('/root/subdir_two/dist/main')
+        self.fs.create_dir('/root/third_go.go')
+        self.fs.create_file('/root/atextfile.txt')
+
+        result = directory_scanner.executables_in_dir(Path('/root/subdir_two'), GoStrategy())
+
+        self.assertEqual(result, '/root/subdir_two/dist/main')
+
+    def test_executables_in_dir_should_find_executable_for_python(self):
+        self.fs.create_dir('/root')
+        self.fs.create_dir('/root/subdir_one')
+        self.fs.create_file('/root/subdir_one/first_python.py')
+        self.fs.create_file('/root/subdir_one/second_python.py')
+        self.fs.create_file('/root/subdir_one/wrapped_code.zip')
+        self.fs.create_dir('/root/subdir_two')
+        self.fs.create_file('/root/subdir_two/first_go.go')
+        self.fs.create_file('/root/subdir_two/second_go.go')
+        self.fs.create_dir('/root/third_go.go')
+        self.fs.create_file('/root/atextfile.txt')
+
+        result = directory_scanner.executables_in_dir(Path('/root/subdir_one'), PythonStrategy())
+
+        self.assertEqual(result, '/root/subdir_one/wrapped_code.zip')
+
+    def test_executables_in_dir_should_find_nested_executable_for_python(self):
+        self.fs.create_dir('/root')
+        self.fs.create_dir('/root/subdir_one')
+        self.fs.create_file('/root/subdir_one/first_python.py')
+        self.fs.create_file('/root/subdir_one/second_python.py')
+        self.fs.create_file('/root/subdir_one/dist/wrapped_code.zip')
+        self.fs.create_dir('/root/subdir_two')
+        self.fs.create_file('/root/subdir_two/first_go.go')
+        self.fs.create_file('/root/subdir_two/second_go.go')
+        self.fs.create_dir('/root/third_go.go')
+        self.fs.create_file('/root/atextfile.txt')
+
+        result = directory_scanner.executables_in_dir(Path('/root/subdir_one'), PythonStrategy())
+
+        self.assertEqual(result, '/root/subdir_one/dist/wrapped_code.zip')
+
+    def test_executables_in_dir_should_ignore_multiple_executables_for_go(self):
+        self.fs.create_dir('/root')
+        self.fs.create_dir('/root/subdir_one')
+        self.fs.create_file('/root/subdir_one/first_python.py')
+        self.fs.create_file('/root/subdir_one/second_python.py')
+        self.fs.create_dir('/root/subdir_two')
+        self.fs.create_file('/root/subdir_two/first_go.go')
+        self.fs.create_file('/root/subdir_two/second_go.go')
+        self.fs.create_file('/root/subdir_two/main')
+        self.fs.create_file('/root/subdir_two/dist/main')
+        self.fs.create_dir('/root/third_go.go')
+        self.fs.create_file('/root/atextfile.txt')
+
+        result = directory_scanner.executables_in_dir(Path('/root/subdir_two'), GoStrategy())
+
+        self.assertIsNone(result)
+
+    def test_executables_in_dir_should_ignore_multiple_executables_for_python(self):
+        self.fs.create_dir('/root')
+        self.fs.create_dir('/root/subdir_one')
+        self.fs.create_file('/root/subdir_one/first_python.py')
+        self.fs.create_file('/root/subdir_one/second_python.py')
+        self.fs.create_file('/root/subdir_one/dist/wrapped_code.zip')
+        self.fs.create_file('/root/subdir_one/wrapped_code.zip')
+        self.fs.create_dir('/root/subdir_two')
+        self.fs.create_file('/root/subdir_two/first_go.go')
+        self.fs.create_file('/root/subdir_two/second_go.go')
+        self.fs.create_dir('/root/third_go.go')
+        self.fs.create_file('/root/atextfile.txt')
+
+        result = directory_scanner.executables_in_dir(Path('/root/subdir_two'), PythonStrategy())
+
+        self.assertIsNone(result)

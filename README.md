@@ -89,7 +89,7 @@ For example, if s3 is the source, the name of the event should contain `s3`: `s3
 
 ##### Go
 
-- the name of your executable should be `handler`, except if you have an executable in the folder of your lambda. If so, the tool will assume that this
+- the name of your executable should be `handler`, except if you have an executable in the folder of your lambda, called `main`. If so, the tool will assume that this
 executable has the code of your lambda. It will set `Handler` and `CodeUri` accordingly.  
 For example, if your folder `mylambda` contains a `main` file under `dist/main`, the `Handler` will become `main`, with the `CodeUri` equal to `/mylambda/dist/main`. 
 - if you want to map a function to an api gateway method, the lambda handler should end with the word Request, with the path and method prepended to this word.
@@ -131,6 +131,7 @@ It requires a bucket as argument (for uploading the lambda zip) and [default AWS
     * Node
     * Java 
 * More flexibility in location of lambdas: searching more folders, or ability to specify folder structure  
+* Incremental templates by checking previous ones for values for timeout, env vars etc. (and maybe notifying user of finds)  
 * Robust error handling 
 * Ask questions. See you call dynamo, add to template? generate outputs? how many buckets for events? deploy template? use 'middleware' for this 
 * Polyglot projects?
