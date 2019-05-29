@@ -94,7 +94,7 @@ def find_lambdas_in_subdir(location: str, language: str, language_suffix: str, a
     return lambdas
 
 
-# TODO to check: are we ignoring all commented out lines, both for handler and other files? maybe filter when reading
+# TODO to check: are we ignoring all commented out lines, both for handler and other files? maybe auto-filter when reading!
 # TODO add best practice: no lambda under root, no two lambdas in same dir (subdirs ok)
 def find_lambdas_new(location: str, language: str, current_dir=None, root_dirs=None) -> List[dict]:
     lambdas = []
