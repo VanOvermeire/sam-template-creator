@@ -8,9 +8,8 @@ The SAM Template Creator helps you set up Infrastructure as Code for an AWS serv
 It reads your project folder and generates a [SAM template][1] containing the necessary functions, globals, environment variables, etc.
 
 Compared to a full-fledged framework like [Serverless][2], the scope of this template creator is *limited*. But this has advantages as well:
-the tool is lightweight, generating no additional files except your IaC yaml, and is simple to use.
-
-Finally, the tool will probably be insufficient to handle very complex use-cases, though it can still provide a starting point to expand upon.
+the tool is lightweight, generating no additional files except your IaC yaml, and is simple to use. Though it may not suffice for very complex
+use-cases, it can still provide a starting point to expand upon.
 
 [1]: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md
 [2]: https://serverless.com/
@@ -19,7 +18,7 @@ Finally, the tool will probably be insufficient to handle very complex use-cases
 
 - python 3.5 or higher
 - pip
-- a serverless project to scan. *Currently only Python and Go projects are supported. Node and Java are planned.*
+- a serverless project to scan. *Currently only Python and Go projects are supported. Support for Node and Java is planned.*
 
 ## Usage Guide / How-to
 
@@ -43,7 +42,7 @@ sam-template-creator --location .
 sam-template-creator -l .
 ```
 
-The tool will also work with absolute paths 
+Or use an absolute path from any directory  
 
 `sam-template-creator --location /path/to/project`
 
@@ -66,15 +65,12 @@ aws cloudformation deploy --template-file outputSamTemplate.yaml --stack-name PI
 
 *Important!* SAM Template Creator requires your project to be organised in a certain way.
 
-See generics (across languages) and specifics (per language) below.
-
 #### Directory
 
-Every lambda should have its own directory, under the root of the project. Other files can be present in the same directory.
-The tool will scan both the file containing the handler and files it directly refers to for information on required permissions, environment variables, etc. 
+The tool will work best if every lambda has its own directory, though it should be able to handle other project structures as well.  
+The file containing the handler and files it directly refers to will be checked for information on required permissions, environment variables, etc. 
 
-If a single zip (for most languages) or executable is present in the folder of the handler file, or a subfolder, 
-the tool assumes this zip contains the code you want to upload to AWS.
+If a single zip (for most languages) or executable is present in the folder of the handler file, or a subfolder, the tool assumes this zip contains the code you want to upload.
 
 #### Naming conventions
 
@@ -125,13 +121,13 @@ It requires a bucket as argument (for uploading the lambda zip) and [default AWS
 
 [3]: https://docs.aws.amazon.com/polly/latest/dg/setup-aws-cli.html
 
-### Planned improvements
+### Roadmap
 
 * Languages
     * Node
-    * Java 
-* More flexibility in location of lambdas: searching more folders, or ability to specify folder structure  
+    * Java  
 * Incremental templates by checking previous ones for values for timeout, env vars etc. (and maybe notifying user of finds)  
 * Robust error handling 
-* Ask questions. See you call dynamo, add to template? generate outputs? how many buckets for events? deploy template? use 'middleware' for this 
+* Ask questions. See you call dynamo, add to template? generate outputs? how many buckets for events? deploy template? use 'middleware' for this
+* More flexibility in location of lambdas: searching more folders, or ability to specify folder structure? 
 * Polyglot projects?

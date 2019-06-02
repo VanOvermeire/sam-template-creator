@@ -122,5 +122,9 @@ class GoStrategy:
     def get_executable_glob():
         return '**/main'
 
+    @staticmethod
+    def remove_commented_lines(lines):
+        return [line for line in lines if not line.strip().startswith('//')]
+
     def __repr__(self):
         return self.__class__.__name__

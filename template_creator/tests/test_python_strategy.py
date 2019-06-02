@@ -121,3 +121,12 @@ class TestPythonStrategy(unittest.TestCase):
         self.assertEqual(results['util'], 'util_functions')
         self.assertEqual(results['secondutil'], 'moreutil')
         self.assertEqual(results['thirdutil'], 'evenmoreutil')
+
+    def test_remove_commented_lines(self):
+        lines = ['# commented.out\n', 'not commented', '\t # commented as well', 'not', ' # also commented']
+
+        results = PythonStrategy.remove_commented_lines(lines)
+
+        self.assertEqual(len(results), 2)
+        self.assertEqual(results[0], 'not commented')
+        self.assertEqual(results[1], 'not')

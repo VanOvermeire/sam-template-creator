@@ -13,11 +13,6 @@ class TestFileInfo(unittest.TestCase):
         strategy = PythonStrategy()
         self.fileInfo = FileInfo('/some/location', '/some/location/dir_of_lambda', '/some/location/dir_of_lambda/file.py', 'def my_handler(s3event, context):', lines, strategy, [])
 
-    def test_build_camel_case_name(self):
-        result = self.fileInfo.build_camel_case_name('hello_world')
-
-        self.assertEqual(result, 'HelloWorld')
-
     def test_build(self):
         result = self.fileInfo.build()
 

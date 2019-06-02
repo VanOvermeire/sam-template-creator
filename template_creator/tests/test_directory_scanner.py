@@ -190,9 +190,7 @@ class TestDirectoryScanner(TestCase):
         self.fs.create_dir('/root/third_go.go')
         self.fs.create_file('/root/atextfile.txt')
 
-        result = directory_scanner.find_lambdas_new('/root', 'python3.7')
-
-        print(result)
+        result = directory_scanner.find_lambda_files_in_directory('/root', 'python3.7')
 
         self.assertEqual(len(result), 2)
         self.assertEqual(result[0]['name'], 'SubdirOne')

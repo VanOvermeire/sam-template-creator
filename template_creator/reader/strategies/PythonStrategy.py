@@ -116,5 +116,9 @@ class PythonStrategy:
     def get_executable_glob():
         return '**/*.zip'
 
+    @staticmethod
+    def remove_commented_lines(lines):
+        return [line for line in lines if not line.strip().startswith('#')]
+
     def __repr__(self):
         return self.__class__.__name__

@@ -141,3 +141,12 @@ class TestGoStrategy(unittest.TestCase):
         self.assertEqual(results['mylib'], '*')
         self.assertEqual(results['secondlib'], '*')
         self.assertEqual(results['thirdlibrary'], '*')
+
+    def test_remove_commented_lines(self):
+        lines = ['not commented', '\t// "myproject/commented"\n', '// import "anotherthing"', 'not']
+
+        results = GoStrategy.remove_commented_lines(lines)
+
+        self.assertEqual(len(results), 2)
+        self.assertEqual(results[0], 'not commented')
+        self.assertEqual(results[1], 'not')
