@@ -1,13 +1,20 @@
 #!/usr/bin/env bash
 
-# TODO this still uses the old way - running with executable. Instead do a local pip install in a virtual env and use pip to create template
 # quite simple, can be expanded later on
+# TODO assert the resources that were created
 
 function checkStatus() {
     if [[ $? -gt 0 ]]; then
         echo "$1 failed"
         exit 1
     fi
+}
+
+function cleanup() {
+    rm template.yaml
+    rm outputSamTemplate.yaml
+    rm command_line
+    aws cloudformation delete-stack --stack-name $1
 }
 
 if [[ $# -lt 1 ]]; then
@@ -18,11 +25,9 @@ fi
 BUCKET=$1
 STACK_NAME="sam-creator-it-test"
 
-# maybe create executable before every run?
-cp ../../dist/template_creator .
-
+./create.sh
 location=$(pwd)
-./template_creator --location ${location}
+./command_line --location ${location}
 
 checkStatus "template creator"
 
@@ -36,7 +41,4 @@ checkStatus "deploying"
 
 echo "Running cleanup of created files and stack"
 
-rm template.yaml
-rm outputSamTemplate.yaml
-rm template_creator
-aws cloudformation delete-stack --stack-name ${STACK_NAME}
+cleanup ${STACK_NAME}
