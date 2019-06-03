@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -e
 
 # quite simple, can be expanded later on
 # TODO assert the resources that were created

@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -e
 
 cd ../..
 echo "Creating command line version of project"
