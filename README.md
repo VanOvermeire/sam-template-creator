@@ -2,7 +2,7 @@
 
 ## Intro
 
-![Alt Text](https://cl.ly/21b792e2627b/Screen%252520Recording%2525202019-04-21%252520at%25252010.56%252520AM.gif)
+![Alt Text](https://github.com/VanOvermeire/sam-template-creator/blob/master/template_creator_demo.gif)
 
 The SAM Template Creator helps you set up Infrastructure as Code for an AWS serverless project.
 It reads your project folder and generates a [SAM template][1] containing the necessary functions, globals, environment variables, etc.
@@ -128,6 +128,6 @@ It requires a bucket as argument (for uploading the lambda zip) and [default AWS
     * Java  
 * Incremental templates by checking previous ones for values for timeout, env vars etc. (and maybe notifying user of finds)  
 * Robust error handling 
-* Ask questions. See you call dynamo, add to template? generate outputs? how many buckets for events? deploy template? use 'middleware' for this
+* Ask questions. I see you call dynamo, add to template? generate outputs? how many buckets for events? deploy template? use 'middleware' for this
 * More flexibility in location of lambdas: searching more folders, or ability to specify folder structure? 
 * Polyglot projects?
