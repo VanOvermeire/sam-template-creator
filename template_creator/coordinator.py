@@ -3,10 +3,9 @@ import logging
 
 from template_creator.util import template_checks
 from template_creator.reader import directory_scanner
+from template_creator.util.constants import DEFAULT_TEMPLATE_NAME
 from template_creator.writer import yaml_writer
 from template_creator.middleware import transformer
-
-DEFAULT_TEMPLATE_NAME = 'template.yaml'
 
 
 def find_full_path_for_yaml_template(location: str, template_name: str) -> str:
@@ -22,8 +21,12 @@ def set_default_if_needed_for(language: str, location: str) -> str:
     return language
 
 
+def get_absolute_path(location):
+    return os.path.abspath(location)
+
+
 def find_resources_and_create_yaml_template(location: str, language: str, set_global: bool) -> None:
-    location = os.path.abspath(location)
+    location = get_absolute_path(location)
     template_checks.check_template_name(location, DEFAULT_TEMPLATE_NAME)
 
     language = set_default_if_needed_for(language, location)

@@ -1,3 +1,5 @@
+DEFAULT_TEMPLATE_NAME = 'template.yaml'
+
 LANGUAGES_WITH_SUFFIXES = {
     'python3.7': '.py',
     'python3.6': '.py',
