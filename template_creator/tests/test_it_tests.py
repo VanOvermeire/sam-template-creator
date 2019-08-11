@@ -1,9 +1,12 @@
+import collections
 import os
 import unittest
 
 from ruamel import yaml
 
 from template_creator import coordinator
+
+Location = collections.namedtuple('Locations', 'project expected result')
 
 
 class ITTests(unittest.TestCase):
@@ -14,18 +17,52 @@ class ITTests(unittest.TestCase):
 
     def test_one_lambda_basic_permissions(self):
         # TODO codeuri is generated as ./ Which should work, but could be cleaner without the /
-        name = 'one_lambda_basic_permissions'
+        location = self.build_locations('one_lambda_basic_permissions')
 
+        coordinator.find_resources_and_create_yaml_template(location.project, None, False)
+
+        self.assert_result_equal_to_expected(location)
+
+        self.cleanup(location)
+
+    def test_one_lambda_in_folder_additional_permissions(self):
+        location = self.build_locations('one_lambda_folder_additional_permissions')
+
+        coordinator.find_resources_and_create_yaml_template(location.project, None, False)
+
+        self.assert_result_equal_to_expected(location)
+
+        self.cleanup(location)
+
+    def build_locations(self, name):
         project_location = '{}/{}'.format(self.tests_location, name)
-        result_template_location = '{}/{}/template.yaml'.format(self.tests_location, name)
-        template_location = '{}/{}.yaml'.format(self.templates, name)
+        expected_template = '{}/{}.yaml'.format(self.templates, name)
+        result_template = '{}/{}/template.yaml'.format(self.tests_location, name)
 
-        coordinator.find_resources_and_create_yaml_template(project_location, None, False)
+        return Location(project_location, expected_template, result_template)
 
-        with open(result_template_location, 'r') as result_stream, open(template_location, 'r') as compare_stream:
-            compare = yaml.safe_load(compare_stream)
+    def sort(self, yaml_dict):
+        for key in yaml_dict.keys():
+            if type(yaml_dict[key]) is list:
+                yaml_list = yaml_dict[key]
+                yaml_list.sort()
+
+                for list_el in yaml_list:
+                    if type(list_el) is dict:
+                        self.sort(list_el)
+            elif type(yaml_dict[key]) is dict:
+                self.sort(yaml_dict[key])
+
+    def assert_result_equal_to_expected(self, location):
+        with open(location.result, 'r') as result_stream, open(location.expected, 'r') as expected_stream:
+            compare = yaml.safe_load(expected_stream)
             result = yaml.safe_load(result_stream)
+
+            self.sort(compare)
+            self.sort(result)
 
             self.assertDictEqual(compare, result)
 
-        os.remove(result_template_location)
+    @staticmethod
+    def cleanup(location):
+        os.remove(location.result)
