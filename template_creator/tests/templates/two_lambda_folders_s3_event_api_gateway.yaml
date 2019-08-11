@@ -1,0 +1,90 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Resources:
+  S3Lambda:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: s3_lambda/
+      Handler: our_lambda.some_handler
+      Role:
+        Fn::GetAtt:
+        - S3LambdaRole
+        - Arn
+      Events:
+        S3LambdaS3Event:
+          Type: S3
+          Properties:
+            Bucket:
+              Ref: S3EventBucket
+            Events: s3:ObjectCreated:*
+      Runtime: python3.7
+      Timeout: 3
+      MemorySize: 512
+  GatwayLambda:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: gatway_lambda/
+      Handler: our_api_lambda.get_hello_world_handler
+      Role:
+        Fn::GetAtt:
+        - GatwayLambdaRole
+        - Arn
+      Events:
+        GET:
+          Type: Api
+          Properties:
+            Path: /hello/world
+            Method: get
+      Runtime: python3.7
+      Timeout: 3
+      MemorySize: 512
+  S3LambdaRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - lambda.amazonaws.com
+          Action:
+          - sts:AssumeRole
+      Path: /
+      Policies:
+      - PolicyName: LambdaPolicy
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: Allow
+            Action:
+            - logs:CreateLogStream
+            - logs:CreateLogGroup
+            - logs:PutLogEvents
+            Resource: '*'
+  GatwayLambdaRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - lambda.amazonaws.com
+          Action:
+          - sts:AssumeRole
+      Path: /
+      Policies:
+      - PolicyName: LambdaPolicy
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: Allow
+            Action:
+            - logs:CreateLogStream
+            - logs:CreateLogGroup
+            - logs:PutLogEvents
+            Resource: '*'
+  S3EventBucket:
+    Type: AWS::S3::Bucket
