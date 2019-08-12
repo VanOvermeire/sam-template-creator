@@ -123,6 +123,7 @@ It requires a bucket as argument (for uploading the lambda zip) and [default AWS
 
 ### Roadmap
 
+* Better support voor cron events?
 * Languages
     * Node
     * Java  
