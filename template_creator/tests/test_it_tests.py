@@ -9,12 +9,11 @@ from template_creator import coordinator
 Location = collections.namedtuple('Locations', 'project expected result')
 
 
-# TODO tests with exe/zip
 class ITTests(unittest.TestCase):
 
     def setUp(self) -> None:
-        self.tests_location = 'it-tests'
-        self.templates = 'templates'
+        self.tests_location = 'template_creator/tests/it-tests'
+        self.templates = 'template_creator/tests/templates'
 
     def test_python_one_lambda_basic_permissions(self):
         # TODO codeuri is generated as ./ Which should work, but could be cleaner without the /
@@ -55,6 +54,16 @@ class ITTests(unittest.TestCase):
 
     def test_go_two_lambda_folders_s3_event_api_gateway(self):
         location = self.build_locations('go_two_lambda_folders_logs_event_api_gateway')
+
+        coordinator.find_resources_and_create_yaml_template(location.project, None, False)
+
+        self.assert_result_equal_to_expected(location)
+
+        self.cleanup(location)
+
+    def test_go_one_lambda_folder_with_exe(self):
+        # TODO to avoid https://github.com/awslabs/aws-sam-cli/issues/274, for an exe, the codeuri should actually be lambda_folder/dist/. and not lambda_folder/dist/main (current situation)
+        location = self.build_locations('go_one_lambda_folder_with_exe')
 
         coordinator.find_resources_and_create_yaml_template(location.project, None, False)
 
