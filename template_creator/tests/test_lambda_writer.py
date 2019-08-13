@@ -36,6 +36,20 @@ class TestLambdaWriter(unittest.TestCase):
         self.assertEqual(properties['Events']['HelloLambdaS3Event']['Properties']['Bucket']['Ref'], 'S3EventBucket')
         self.assertEqual(properties['Events']['HelloLambdaS3Event']['Properties']['Events'], 's3:ObjectCreated:*')
 
+    def test_create_lambda_function_with_rate_schedule_event(self):
+        result = lambda_writer.create_lambda_function('HelloLambda', 'file.handler', 'uridir', [], ['Schedule:2 hours'], [])
+
+        self.assertEqual(result['Type'], 'AWS::Serverless::Function')
+
+        properties = result['Properties']
+        print(properties)
+
+        self.assertEqual(properties['CodeUri'], 'uridir')
+        self.assertEqual(properties['Handler'], 'file.handler')
+        self.assertEqual(properties['Role']['Fn::GetAtt'], ['HelloLambdaRole', 'Arn'])
+        self.assertEqual(properties['Events']['HelloLambdaScheduleEvent']['Type'], 'Schedule')
+        self.assertEqual(properties['Events']['HelloLambdaScheduleEvent']['Properties']['Schedule'], 'rate(2 hours)')
+
     def test_create_lambda_function_no_events(self):
         result = lambda_writer.create_lambda_function('HelloLambda', 'file.handler', 'uridir', ['BUCKET'], [], [])
 

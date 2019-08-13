@@ -82,6 +82,7 @@ For example `def lambda_handler(s3event, context)`
 For example, if your handler's name is `def put_hello_world_hander(event, context)`, the function is mapped to a `PUT` to `/hello/world`.
 - if the lambda is triggered by an event source, the name should reflect this. 
 For example, if s3 is the source, the name of the event should contain `s3`: `s3event` or `s3_event` or...
+If you want a cron event, you can name the event `5_hours_event` or similar and an event that runs every 5 hours will be created.
 
 ##### Go
 
@@ -92,6 +93,7 @@ For example, if your folder `mylambda` contains a `main` file under `dist/main`,
 For example, `func PostAddHelloRequest(_ context.Context, event events.APIGatewayProxyRequest) error` is mapped to a `POST` to `/add/hello`.
 - if the lambda is triggered by an event source, the name should reflect that. 
 For example, if s3 is the source, the name of the event should contain `s3`, like this: `s3event` or `s3_event` or...
+If you want a cron event, you can name the event `5_hours_event` or similar and an event that runs every 5 hours will automatically be created.
 
 ##### Node
 
@@ -123,7 +125,7 @@ It requires a bucket as argument (for uploading the lambda zip) and [default AWS
 
 ### Roadmap
 
-* Better support voor cron events?
+* Solve TODO's
 * Languages
     * Node
     * Java  

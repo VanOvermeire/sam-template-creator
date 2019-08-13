@@ -1,4 +1,5 @@
 import logging
+import re
 
 from template_creator.util.constants import HTTP_METHODS, EVENT_TYPES
 
@@ -39,6 +40,12 @@ def find_api(split_prefix):
 def find_events(lambda_event):
     events = EVENT_TYPES.keys()
     lambda_event_lower = lambda_event.lower()
+
+    rate_expression = re.compile(r'[0-9]+_?(minutes|minute|hours|hour|days|day)')
+    found = rate_expression.search(lambda_event)
+
+    if found:
+        return ['Schedule:{}'.format(found.group(0).replace('_', ' '))]
 
     if 'cloudwatch' in lambda_event_lower:
         if 'logs' in lambda_event_lower:

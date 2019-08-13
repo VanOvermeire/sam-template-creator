@@ -2,6 +2,8 @@ from typing import List
 
 from template_creator.util.constants import EVENT_TYPES
 
+SCHEDULE_WITH_RATE_PREFIX = 'Schedule:'
+
 
 def create_lambda_function(name: str, handler: str, uri: str, variables, events, api) -> dict:
     generic = {
@@ -18,9 +20,9 @@ def create_lambda_function(name: str, handler: str, uri: str, variables, events,
         }
     }
 
-    add_variables(generic, variables)
-    add_events(generic, events, name)
-    add_api(generic, api)
+    _add_variables(generic, variables)
+    _add_events(generic, events, name)
+    _add_api(generic, api)
 
     return generic
 
@@ -33,16 +35,21 @@ def create_role_name(lambda_name: str) -> str:
     return '{}Role'.format(lambda_name)
 
 
-def add_events(generic: dict, events: List[str], name: str) -> None:
+def _add_events(generic: dict, events: List[str], name: str) -> None:
     events_with_value = dict()
     if events:
         for event in events:
-            events_with_value[create_event_name(name, event)] = EVENT_TYPES[event]
+            if SCHEDULE_WITH_RATE_PREFIX in event:
+                schedule_event = EVENT_TYPES['Schedule']
+                schedule_event['Properties']['Schedule'] = 'rate({})'.format(event.replace(SCHEDULE_WITH_RATE_PREFIX, ''))
+                events_with_value[create_event_name(name, 'Schedule')] = schedule_event
+            else:
+                events_with_value[create_event_name(name, event)] = EVENT_TYPES[event]
 
         generic['Properties'].update({'Events': events_with_value})
 
 
-def add_variables(generic: dict, variables: List[str]) -> None:
+def _add_variables(generic: dict, variables: List[str]) -> None:
     variables_with_value = dict()
 
     if variables:
@@ -56,7 +63,7 @@ def add_variables(generic: dict, variables: List[str]) -> None:
         })
 
 
-def add_api(generic: dict, api: List[str]) -> None:
+def _add_api(generic: dict, api: List[str]) -> None:
     if api:
         method = api[0]
         path = api[1]
