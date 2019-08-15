@@ -15,6 +15,7 @@ PYTHON_EXCEPTIONS = {
     'mturk': 'mechanicalturk',
     'neptune': 'neptune-db',
     'pinpoint-sms-voice': 'sms-voice',
+    'runtime.sagemaker': 'sagemaker',
     'stepfunctions': 'states',
 }
 
