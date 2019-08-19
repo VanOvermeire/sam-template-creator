@@ -56,7 +56,7 @@ def _add_variables(generic: dict, variables: List[str], existing_variables) -> N
 
     if variables:
         for variable in variables:
-            if variable in existing_variables:
+            if variable in existing_variables:  # this kind of logic *might* also fit in with the transformer, but ok for now
                 logging.info('Value for environment variable {} found in existing template: {}. Adding to new template'.format(variable, existing_variables[variable]))
                 variables_with_value[variable] = existing_variables[variable]
             else:

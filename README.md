@@ -47,6 +47,8 @@ Or use an absolute path from any directory
 `sam-template-creator --location /path/to/project`
 
 The script will create a `template.yaml` file in the root of your project's directory. Check its contents! It might point out some things you have to fill in.
+If a file with that name already exists, a backup will be created. If the pre-existing file is a SAM template, the tool will try to use it to fill in
+values of the new template.
 
 You can also pass some (optional) arguments:
 
@@ -122,6 +124,10 @@ Unit tests can be run with `python -m unittest`. A relatively simple it-test is 
 It requires a bucket as argument (for uploading the lambda zip) and [default AWS credentials][3].
 
 [3]: https://docs.aws.amazon.com/polly/latest/dg/setup-aws-cli.html
+
+### Releases
+
+Releases on pip might be behind a bit on the latest commits to the project.
 
 ### Roadmap
 
