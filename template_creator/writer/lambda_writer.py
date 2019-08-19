@@ -1,3 +1,5 @@
+import logging
+
 from typing import List
 
 from template_creator.util.constants import EVENT_TYPES
@@ -5,7 +7,7 @@ from template_creator.util.constants import EVENT_TYPES
 SCHEDULE_WITH_RATE_PREFIX = 'Schedule:'
 
 
-def create_lambda_function(name: str, handler: str, uri: str, variables, events, api) -> dict:
+def create_lambda_function(name: str, handler: str, uri: str, variables, events, api, existing_template) -> dict:
     generic = {
         'Type': 'AWS::Serverless::Function',
         'Properties': {
@@ -19,8 +21,8 @@ def create_lambda_function(name: str, handler: str, uri: str, variables, events,
             }
         }
     }
-
-    _add_variables(generic, variables)
+    existing_variables = find_existing_env_var_values(existing_template)
+    _add_variables(generic, variables, existing_variables)
     _add_events(generic, events, name)
     _add_api(generic, api)
 
@@ -49,18 +51,37 @@ def _add_events(generic: dict, events: List[str], name: str) -> None:
         generic['Properties'].update({'Events': events_with_value})
 
 
-def _add_variables(generic: dict, variables: List[str]) -> None:
+def _add_variables(generic: dict, variables: List[str], existing_variables) -> None:
     variables_with_value = dict()
 
     if variables:
         for variable in variables:
-            variables_with_value[variable] = 'Fill in value or delete if not needed'
+            if variable in existing_variables:
+                logging.info('Value for environment variable {} found in existing template: {}. Adding to new template'.format(variable, existing_variables[variable]))
+                variables_with_value[variable] = existing_variables[variable]
+            else:
+                variables_with_value[variable] = 'Fill in value or delete if not needed'
 
         generic['Properties'].update({
             'Environment': {
                 'Variables': variables_with_value
             }
         })
+
+
+def find_existing_env_var_values(existing_template):
+    names_of_variables = {}
+
+    if 'Resources' in existing_template:
+        for name, value in existing_template['Resources'].items():
+            if value['Type'] == 'AWS::Serverless::Function':
+                try:
+                    # will overwrite existing keys, probably ok behavior
+                    names_of_variables.update(value['Properties']['Environment']['Variables'])
+                except KeyError:
+                    pass
+
+    return names_of_variables
 
 
 def _add_api(generic: dict, api: List[str]) -> None:

@@ -1,5 +1,6 @@
 import collections
 import os
+import re
 import unittest
 
 from ruamel import yaml
@@ -12,10 +13,8 @@ Location = collections.namedtuple('Locations', 'project expected result')
 class ITTests(unittest.TestCase):
 
     def setUp(self) -> None:
-        # self.tests_location = 'template_creator/tests/it-tests' TODO temp
-        self.tests_location = 'it-tests'
-        # self.templates = 'template_creator/tests/templates'
-        self.templates = 'templates'
+        self.tests_location = 'template_creator/tests/it-tests'
+        self.templates = 'template_creator/tests/templates'
 
     def test_python_one_lambda_basic_permissions(self):
         # TODO codeuri is generated as ./ Which should work, but could be cleaner without the /
@@ -54,7 +53,14 @@ class ITTests(unittest.TestCase):
         with open(location.result, 'r') as result_stream:
             result = yaml.safe_load(result_stream)
 
-            self.assertIn('my-own-bucket-name', result)  # TODO change if more things are captured
+            self.assertIn('my-own-bucket-name', result['Resources']['LambdaFolder']['Properties']['Environment']['Variables']['BUCKET_NAME'])  # change if more things are captured
+
+        for file in os.listdir(location.project):
+            existing_templates = re.compile(r'template-.*\.yaml')
+
+            if existing_templates.search(file):
+                os.remove('{}/{}'.format(location.project, file))
+                break  # should only be one - also serves as a precaution
 
     def test_go_one_lambda_folder_additional_permissions(self):
         location = self.build_locations('go_one_lambda_folder_additional_permissions')

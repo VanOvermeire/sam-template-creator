@@ -22,7 +22,7 @@ class TestInputChecks(unittest.TestCase):
 
         result = template_checks.check_template_name('/some/location', 'default_template.yaml')
 
-        self.assertIsNone(result)
+        self.assertDictEqual({}, result)
         rename_mock.assert_not_called()
 
     @patch('template_creator.util.template_checks.build_backup_name')
@@ -32,10 +32,10 @@ class TestInputChecks(unittest.TestCase):
     def test_rename_when_template_in_dir(self, rename_mock, listdir_mock, existing_template_mock, backup_mock):
         listdir_mock.return_value = ['somefile.py', 'default_template.yaml']
         backup_mock.return_value = 'backup.yaml'
-        existing_template_mock.return_value = {}
+        existing_template_mock.return_value = {'some': 'value'}
 
         result = template_checks.check_template_name('/some/location', 'default_template.yaml')
 
-        self.assertIsNotNone(result)
+        self.assertDictEqual({'some': 'value'}, result)
 
         rename_mock.assert_called_once_with('/some/location/default_template.yaml', '/some/location/backup.yaml')

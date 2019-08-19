@@ -3,12 +3,13 @@ from ruamel.yaml import YAML
 from template_creator.writer import lambda_writer
 from template_creator.writer import header_writer
 
+# TODO still needs tests
 
-def write_lambdas(lambdas: dict, set_globals: bool, language: str) -> dict:
+def write_lambdas(lambdas: dict, set_globals: bool, language: str, existing_template: dict) -> dict:
     resources = dict()
 
     for l in lambdas:
-        new_lambda = lambda_writer.create_lambda_function(l['name'], l['handler'], l['uri'], l['variables'], l['events'], l['api'])
+        new_lambda = lambda_writer.create_lambda_function(l['name'], l['handler'], l['uri'], l['variables'], l['events'], l['api'], existing_template)
 
         if not set_globals:
             new_lambda['Properties']['Runtime'] = language
@@ -33,7 +34,7 @@ def write_roles(lambdas: dict) -> dict:
 def write_all_resources(config: dict) -> dict:
     resources = dict()
 
-    resources.update(write_lambdas(config['lambdas'], config['set-global'], config['language']))
+    resources.update(write_lambdas(config['lambdas'], config['set-global'], config['language'], config['existing_template']))
     resources.update(write_roles(config['lambdas']))
     resources.update(config['other_resources'])
 
