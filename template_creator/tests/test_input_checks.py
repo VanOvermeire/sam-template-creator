@@ -1,6 +1,4 @@
-import unittest
 from pyfakefs.fake_filesystem_unittest import TestCase
-
 from template_creator.util import input_checks
 
 

@@ -12,8 +12,10 @@ Location = collections.namedtuple('Locations', 'project expected result')
 class ITTests(unittest.TestCase):
 
     def setUp(self) -> None:
-        self.tests_location = 'template_creator/tests/it-tests'
-        self.templates = 'template_creator/tests/templates'
+        # self.tests_location = 'template_creator/tests/it-tests' TODO temp
+        self.tests_location = 'it-tests'
+        # self.templates = 'template_creator/tests/templates'
+        self.templates = 'templates'
 
     def test_python_one_lambda_basic_permissions(self):
         # TODO codeuri is generated as ./ Which should work, but could be cleaner without the /
@@ -42,6 +44,17 @@ class ITTests(unittest.TestCase):
         self.assert_result_equal_to_expected(location)
 
         self.cleanup(location)
+
+    def test_python_one_lambda_previous_template(self):
+        # TODO save the 'preexisting' template, or reset the name after the tests -> actually not needed if test goes ok
+        location = self.build_locations('python_one_lambda_previous_template')
+
+        coordinator.find_resources_and_create_yaml_template(location.project, None, False)
+
+        with open(location.result, 'r') as result_stream:
+            result = yaml.safe_load(result_stream)
+
+            self.assertIn('my-own-bucket-name', result)  # TODO change if more things are captured
 
     def test_go_one_lambda_folder_additional_permissions(self):
         location = self.build_locations('go_one_lambda_folder_additional_permissions')
@@ -91,14 +104,19 @@ class ITTests(unittest.TestCase):
                 self.sort(yaml_dict[key])
 
     def assert_result_equal_to_expected(self, location):
+        compare, result = self.retrieve_result_and_expected_yaml_as_dicts(location)
+
+        self.sort(compare)
+        self.sort(result)
+        self.assertDictEqual(compare, result)
+
+    @staticmethod
+    def retrieve_result_and_expected_yaml_as_dicts(location):
         with open(location.result, 'r') as result_stream, open(location.expected, 'r') as expected_stream:
             compare = yaml.safe_load(expected_stream)
             result = yaml.safe_load(result_stream)
 
-            self.sort(compare)
-            self.sort(result)
-
-            self.assertDictEqual(compare, result)
+            return compare, result
 
     @staticmethod
     def cleanup(location):

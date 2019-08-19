@@ -126,11 +126,14 @@ It requires a bucket as argument (for uploading the lambda zip) and [default AWS
 ### Roadmap
 
 * Solve TODO's
+* Multiple sns/sqs/... events (by prefix of name?)
+* Step function support (by name of event and return value?)
+* Incremental templates by checking previous ones for values for timeout, env vars etc. (and maybe notifying user of finds)  
 * Languages
     * Node
     * Java  
-* Incremental templates by checking previous ones for values for timeout, env vars etc. (and maybe notifying user of finds)  
 * Robust error handling 
-* Ask questions. I see you call dynamo, add to template? generate outputs? how many buckets for events? deploy template? use 'middleware' for this
+* Ask questions. Call dynamo -> add to template? Sns publish -> add a topic? 
+* More general questions (generate outputs, deploy template,...)?   
 * More flexibility in location of lambdas: searching more folders, or ability to specify folder structure? 
 * Polyglot projects?

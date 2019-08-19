@@ -27,7 +27,7 @@ def get_absolute_path(location):
 
 def find_resources_and_create_yaml_template(location: str, language: str, set_global: bool) -> None:
     location = get_absolute_path(location)
-    template_checks.check_template_name(location, DEFAULT_TEMPLATE_NAME)
+    existing_template_as_dict = template_checks.check_template_name(location, DEFAULT_TEMPLATE_NAME)
 
     language = set_default_if_needed_for(language, location)
     template_location = find_full_path_for_yaml_template(location, DEFAULT_TEMPLATE_NAME)
@@ -44,6 +44,7 @@ def find_resources_and_create_yaml_template(location: str, language: str, set_gl
                            'other_resources': other_resources,
                            'location': template_location,
                            'set-global': set_global,
+                           'existing_template': existing_template_as_dict,
                            })
 
         logging.info('Finished writing to {}. Check the template, there may be some things for you to fill in or edit.'.format(template_location))
