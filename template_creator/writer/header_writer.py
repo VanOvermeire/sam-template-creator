@@ -1,11 +1,11 @@
-def write_header():
+def _write_root_level_header():
     return {
         'AWSTemplateFormatVersion': '2010-09-09',
         'Transform': 'AWS::Serverless-2016-10-31'
     }
 
 
-def write_global_section(language):
+def _write_global_section(language):
     return {
         'Globals': {
             'Function': {
@@ -18,9 +18,9 @@ def write_global_section(language):
 
 
 def write_headers(config):
-    headers = write_header()
+    headers = _write_root_level_header()
 
     if config['set-global']:
-        headers.update(write_global_section(config['language']))
+        headers.update(_write_global_section(config['language']))
 
     return headers

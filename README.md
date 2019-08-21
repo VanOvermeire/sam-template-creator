@@ -132,9 +132,9 @@ Releases on pip might be behind a bit on the latest commits to the project.
 ### Roadmap
 
 * Solve TODO's
+* More use of previous template values 
 * Multiple sns/sqs/... events (by prefix of name?)
 * Step function support (by name of event and return value?)
-* Incremental templates by checking previous ones for values for timeout, env vars etc. (and maybe notifying user of finds)  
 * Languages
     * Node
     * Java  

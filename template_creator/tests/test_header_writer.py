@@ -6,13 +6,13 @@ from template_creator.writer import header_writer
 class TestHeaderWriter(unittest.TestCase):
 
     def test_write_header(self):
-        result = header_writer.write_header()
+        result = header_writer._write_root_level_header()
 
         self.assertEqual(result['AWSTemplateFormatVersion'], '2010-09-09')
         self.assertEqual(result['Transform'], 'AWS::Serverless-2016-10-31')
 
     def test_write_global(self):
-        result = header_writer.write_global_section('python3.7')
+        result = header_writer._write_global_section('python3.7')
 
         globals_function = result['Globals']['Function']
 

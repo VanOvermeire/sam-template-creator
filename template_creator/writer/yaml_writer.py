@@ -3,9 +3,8 @@ from ruamel.yaml import YAML
 from template_creator.writer import lambda_writer
 from template_creator.writer import header_writer
 
-# TODO still needs tests
 
-def write_lambdas(lambdas: dict, set_globals: bool, language: str, existing_template: dict) -> dict:
+def _write_lambdas(lambdas: list, set_globals: bool, language: str, existing_template: dict) -> dict:
     resources = dict()
 
     for l in lambdas:
@@ -21,7 +20,7 @@ def write_lambdas(lambdas: dict, set_globals: bool, language: str, existing_temp
     return resources
 
 
-def write_roles(lambdas: dict) -> dict:
+def _write_roles(lambdas: list) -> dict:
     resources = dict()
 
     for l in lambdas:
@@ -31,11 +30,11 @@ def write_roles(lambdas: dict) -> dict:
     return resources
 
 
-def write_all_resources(config: dict) -> dict:
+def _write_all_resources(config: dict) -> dict:
     resources = dict()
 
-    resources.update(write_lambdas(config['lambdas'], config['set-global'], config['language'], config['existing_template']))
-    resources.update(write_roles(config['lambdas']))
+    resources.update(_write_lambdas(config['lambdas'], config['set-global'], config['language'], config['existing_template']))
+    resources.update(_write_roles(config['lambdas']))
     resources.update(config['other_resources'])
 
     return {
@@ -50,6 +49,6 @@ def write(config: dict) -> None:
     with open(config['location'], 'w') as yamlFile:
         complete_dict = {}
         complete_dict.update(header_writer.write_headers(config))
-        complete_dict.update(write_all_resources(config))
+        complete_dict.update(_write_all_resources(config))
 
         yaml.dump(complete_dict, yamlFile)
