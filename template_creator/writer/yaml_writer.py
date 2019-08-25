@@ -4,6 +4,21 @@ from template_creator.writer import lambda_writer
 from template_creator.writer import header_writer
 
 
+def _set_non_global_properties(new_lambda_name, new_lambda, language: str, existing_template: dict) -> dict:
+    if existing_template.get('Resources', {}).get(new_lambda_name, {}).get('Properties', {}):
+        existing_lambda = existing_template['Resources'][new_lambda_name]
+
+        new_lambda['Properties']['Runtime'] = existing_lambda['Properties'].get('Runtime', language)
+        new_lambda['Properties']['Timeout'] = existing_lambda['Properties'].get('Timeout', 3)
+        new_lambda['Properties']['MemorySize'] = existing_lambda['Properties'].get('MemorySize', 512)
+    else:
+        new_lambda['Properties']['Runtime'] = language
+        new_lambda['Properties']['Timeout'] = 3
+        new_lambda['Properties']['MemorySize'] = 512
+
+    return new_lambda
+
+
 def _write_lambdas(lambdas: list, set_globals: bool, language: str, existing_template: dict) -> dict:
     resources = dict()
 
@@ -11,9 +26,7 @@ def _write_lambdas(lambdas: list, set_globals: bool, language: str, existing_tem
         new_lambda = lambda_writer.create_lambda_function(l['name'], l['handler'], l['uri'], l['variables'], l['events'], l['api'], existing_template)
 
         if not set_globals:
-            new_lambda['Properties']['Runtime'] = language
-            new_lambda['Properties']['Timeout'] = 3
-            new_lambda['Properties']['MemorySize'] = 512
+            new_lambda = _set_non_global_properties(l['name'], new_lambda, language, existing_template)
 
         resources[l['name']] = new_lambda
 

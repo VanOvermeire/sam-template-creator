@@ -34,9 +34,39 @@ class YamlWriterTest(unittest.TestCase):
 
         result = yaml_writer._write_lambdas(lambdas, False, 'python3.7', {})
 
-        print(result)
-
         self.assertEqual(result['firstLambda']['Name'], 'lambda')
         self.assertEqual(result['firstLambda']['Properties']['Runtime'], 'python3.7')
         self.assertEqual(result['firstLambda']['Properties']['Timeout'], 3)
         self.assertEqual(result['firstLambda']['Properties']['MemorySize'], 512)
+
+    def test_set_non_global_properties_all_previous_values(self):
+        our_lambda = {'Properties': {}}
+        properties = {'Timeout': 10, 'Runtime': 'node', 'MemorySize': 1024}
+        existing_template_dict = {'Resources': {'TestFunction': {'Properties': properties}}}
+
+        result = yaml_writer._set_non_global_properties('TestFunction', our_lambda, 'python3.7', existing_template_dict)
+
+        self.assertEqual(result['Properties']['Runtime'], 'node')
+        self.assertEqual(result['Properties']['Timeout'], 10)
+        self.assertEqual(result['Properties']['MemorySize'], 1024)
+
+    def test_set_non_global_properties_no_previous_values(self):
+        our_lambda = {'Properties': {}}
+        existing_template_dict = {}
+
+        result = yaml_writer._set_non_global_properties('TestFunction', our_lambda, 'python3.7', existing_template_dict)
+
+        self.assertEqual(result['Properties']['Runtime'], 'python3.7')
+        self.assertEqual(result['Properties']['Timeout'], 3)
+        self.assertEqual(result['Properties']['MemorySize'], 512)
+
+    def test_set_non_global_properties_previous_timeout(self):
+        our_lambda = {'Properties': {}}
+        properties = {'Timeout': 10, 'MemorySize': 1024}
+        existing_template_dict = {'Resources': {'TestFunction': {'Properties': properties}}}
+
+        result = yaml_writer._set_non_global_properties('TestFunction', our_lambda, 'python3.7', existing_template_dict)
+
+        self.assertEqual(result['Properties']['Runtime'], 'python3.7')
+        self.assertEqual(result['Properties']['Timeout'], 10)
+        self.assertEqual(result['Properties']['MemorySize'], 1024)
